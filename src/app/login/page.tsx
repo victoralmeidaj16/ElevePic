@@ -8,23 +8,36 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Github, LogIn, Loader2 } from "lucide-react"; // Added Loader2
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { signInWithGoogle } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        // Simulate network request
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // TODO: Implement Email/Password login if needed, for now we will just simulate validation
+        // or prioritize Google Auth as per modern standards.
+        // For this demo, let's encourage Google Sign In as the primary "real" method.
 
-        // Set mock token
-        localStorage.setItem("elevepic_token", "mock_token_12345");
+        alert("Please use 'Continue with Google' for the real Firebase integration demo.");
+        setIsLoading(false);
+    };
 
-        // Redirect to dashboard
-        router.push("/dashboard");
+    const handleGoogleLogin = async () => {
+        try {
+            setIsLoading(true);
+            await signInWithGoogle();
+            router.push("/dashboard");
+        } catch (error) {
+            console.error("Login failed", error);
+            alert("Login failed. Check console for details.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -78,7 +91,7 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <Button variant="outline" type="button" className="w-full border-white/10 hover:bg-white/5">
+                    <Button variant="outline" type="button" className="w-full border-white/10 hover:bg-white/5" onClick={handleGoogleLogin} disabled={isLoading}>
                         <Github className="mr-2 h-4 w-4" /> Google
                     </Button>
                 </CardContent>

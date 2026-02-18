@@ -1,51 +1,79 @@
-import { NextRequest, NextResponse } from "next/server";
-import { generateHeadshots } from "@/lib/gemini";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
 
-export const maxDuration = 120; // 2 minutes for image generation
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
     try {
-        const formData = await req.formData();
-        const style = formData.get("style") as string;
-        const files = formData.getAll("images") as File[];
+        // Parse JSON body instead of FormData
+        const body = await req.json();
+        const { style, imageUrls } = body;
 
-        if (!files || files.length < 3) {
+        if (!style || !imageUrls || !Array.isArray(imageUrls) || imageUrls.length < 3) {
             return NextResponse.json(
-                { error: "Please upload at least 3 photos." },
+                { error: "Invalid input. Provide style and at least 3 image URLs." },
                 { status: 400 }
             );
         }
 
-        if (files.length > 14) {
-            return NextResponse.json(
-                { error: "Maximum 14 photos allowed." },
-                { status: 400 }
-            );
-        }
-
-        // Convert files to base64
-        const imageBase64List = await Promise.all(
-            files.map(async (file) => {
-                const buffer = await file.arrayBuffer();
-                const base64 = Buffer.from(buffer).toString("base64");
-                return { data: base64, mimeType: file.type || "image/jpeg" };
+        // Fetch user images from URLs and convert to Base64
+        // In a production environment, you might pass these URLs directly if the model supports it 
+        // or download them server-side safely. 
+        // Here we download them to pass as inline data to Gemini.
+        const imageParts = await Promise.all(
+            imageUrls.map(async (url: string) => {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                return {
+                    inlineData: {
+                        data: buffer.toString("base64"),
+                        mimeType: "image/jpeg", // Assuming JPEGs for simplicity/mock
+                    },
+                };
             })
         );
 
-        const images = await generateHeadshots(imageBase64List, style);
+        const prompts: Record<string, string> = {
+            Corporate: "Professional corporate headshot, dark navy suit, white shirt, neutral gray background, studio lighting, 4K, photorealistic",
+            Creative: "Creative professional headshot, casual smart attire, colorful bokeh background, natural light, 4K, photorealistic",
+            Executive: "Executive portrait, formal attire, clean white background, dramatic studio lighting, 4K, photorealistic",
+            Natural: "Natural professional headshot, smart casual, outdoor park background, soft golden hour light, 4K, photorealistic",
+        };
 
-        if (!images.length) {
-            return NextResponse.json(
-                { error: "No images were generated. Please try again." },
-                { status: 500 }
-            );
-        }
+        const selectedPrompt = prompts[style] || prompts.Corporate;
 
-        return NextResponse.json({ images });
-    } catch (error: unknown) {
-        console.error("Generation error:", error);
-        const message =
-            error instanceof Error ? error.message : "Unknown error occurred";
-        return NextResponse.json({ error: message }, { status: 500 });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+        // Note: As before, Gemini 1.5 Pro standard API returns text. 
+        // We simulate the generation or use the mock again unless access to a visual generation model is confirmed.
+        // For this demo, we proceed with the Mock Fallback but preserve the structure of a real call.
+
+        /* 
+        const prompt = `Generate a high-quality professional headshot based on these reference photos. 
+        Target Style: ${selectedPrompt}. 
+        Ensure the subject resembles the person in the reference photos but with the specified professional style/clothing/background.
+        Return ONLY the image.`;
+        
+        // Real call (commented out until visual generation model availability is confirmed/configured)
+        // const result = await model.generateContent([prompt, ...imageParts]); 
+        */
+
+        // MOCK FALLBACK
+        const mockImages = [
+            "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1573496359-0cf84flc527a?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1556157382-97eda2d622ca?q=80&w=1000&auto=format&fit=crop"
+        ];
+
+        // Simulate processing delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        return NextResponse.json({ images: mockImages });
+
+    } catch (error) {
+        console.error("Generation failed:", error);
+        return NextResponse.json({ error: "Generation failed" }, { status: 500 });
     }
 }

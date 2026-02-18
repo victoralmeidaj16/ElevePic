@@ -2,26 +2,26 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { CloudUpload, Image as ImageIcon, Wand2 } from "lucide-react";
+import { Card } from "@/components/ui/Card";
+import { CloudUpload, Wand2 } from "lucide-react";
 
 export function UploadMockup() {
     return (
-        <section className="py-24 bg-gradient-to-b from-background to-black/40">
+        <section className="py-24 bg-background overflow-hidden relative">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16">
-                    <Badge className="mb-4">Internal Preview</Badge>
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
-                        Intuitive Creation Studio
+                    <Badge className="mb-6">Preview da Plataforma</Badge>
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+                        Estúdio de Criação Intuitivo
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl text-lg">
-                        Experience the future of photo editing. Simple, fast, and incredibly powerful.
+                    <p className="text-slate-400 max-w-2xl text-lg">
+                        Experimente o futuro da edição. Simples, rápido e incrivelmente poderoso.
                     </p>
                 </div>
 
                 <div className="relative max-w-5xl mx-auto">
                     {/* Decorative Glow */}
-                    <div className="absolute inset-0 bg-primary/10 blur-[100px] -z-10" />
+                    <div className="absolute inset-0 bg-blue-600/10 blur-[100px] -z-10" />
 
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
@@ -29,71 +29,56 @@ export function UploadMockup() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <Card className="border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden shadow-2xl">
-                            <div className="flex border-b border-white/10">
+                        <Card className="border-white/10 bg-slate-900/80 backdrop-blur-xl overflow-hidden shadow-2xl rounded-2xl">
+                            <div className="flex border-b border-white/5 bg-white/5">
                                 <div className="p-4 flex gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                                    <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                                    <div className="w-3 h-3 rounded-full bg-slate-600/50" />
+                                    <div className="w-3 h-3 rounded-full bg-slate-600/50" />
+                                    <div className="w-3 h-3 rounded-full bg-slate-600/50" />
                                 </div>
-                                <div className="flex-1 flex items-center justify-center text-xs text-muted-foreground font-mono">
-                                    elevepic_studio_v1.0
+                                <div className="flex-1 flex items-center justify-center text-xs text-slate-500 font-mono">
+                                    elevepic_studio_app
                                 </div>
                             </div>
 
-                            <div className="flex flex-col md:flex-row h-[600px]">
+                            <div className="flex flex-col md:flex-row h-[500px]">
                                 {/* Sidebar */}
-                                <div className="w-full md:w-64 border-r border-white/10 p-6 space-y-6 hidden md:block">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Project</label>
-                                        <div className="p-3 rounded-lg bg-white/5 border border-white/5 text-sm">Untitled Project</div>
+                                <div className="w-full md:w-64 border-r border-white/5 p-6 space-y-8 hidden md:block bg-black/20">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Projeto Atual</label>
+                                        <div className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20 text-sm text-blue-200 font-medium">Headshots LinkedIn</div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Style</label>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <div className="aspect-square rounded-md bg-primary/20 border border-primary/50" />
-                                            <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
-                                            <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
-                                            <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Estilo Selecionado</label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="aspect-square rounded-lg bg-blue-600 ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-900 transition-all cursor-pointer" />
+                                            <div className="aspect-square rounded-lg bg-slate-800 border border-white/5 hover:bg-slate-700 transition-all cursor-pointer" />
+                                            <div className="aspect-square rounded-lg bg-slate-800 border border-white/5 hover:bg-slate-700 transition-all cursor-pointer" />
+                                            <div className="aspect-square rounded-lg bg-slate-800 border border-white/5 hover:bg-slate-700 transition-all cursor-pointer" />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Main Area */}
                                 <div className="flex-1 p-8 flex flex-col items-center justify-center relative">
-                                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+                                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
 
-                                    <div className="w-full max-w-md aspect-[4/3] rounded-xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-4 bg-white/5 transition-colors hover:bg-white/10 cursor-pointer group">
-                                        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                            <CloudUpload className="w-8 h-8 text-primary" />
+                                    <div className="w-full max-w-md aspect-[4/3] rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center gap-6 bg-slate-900/50 transition-colors hover:bg-slate-800/50 cursor-pointer group">
+                                        <div className="w-20 h-20 rounded-full bg-blue-600/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <CloudUpload className="w-10 h-10 text-blue-500" />
                                         </div>
-                                        <div className="text-center">
-                                            <h3 className="text-lg font-semibold">Drop your photos here</h3>
-                                            <p className="text-sm text-muted-foreground">or click to browse</p>
+                                        <div className="text-center space-y-2">
+                                            <h3 className="text-lg font-semibold text-slate-200">Arraste suas fotos aqui</h3>
+                                            <p className="text-sm text-slate-500">JPG ou PNG até 5MB</p>
                                         </div>
                                     </div>
 
-                                    <div className="mt-8 flex gap-4">
-                                        <Button variant="ghost" className="text-muted-foreground">Clear</Button>
-                                        <Button className="bg-primary hover:bg-primary/90">
+                                    <div className="mt-10 flex gap-4 w-full max-w-md">
+                                        <Button variant="ghost" className="text-slate-400 hover:text-white flex-1">Limpar</Button>
+                                        <Button className="bg-blue-600 hover:bg-blue-700 text-white flex-2 shadow-lg shadow-blue-900/20 w-2/3">
                                             <Wand2 className="w-4 h-4 mr-2" />
-                                            Generate Preview
+                                            Gerar Prévia
                                         </Button>
-                                    </div>
-                                </div>
-
-                                {/* Properties Panel (Mock) */}
-                                <div className="w-72 border-l border-white/10 p-6 hidden lg:block">
-                                    <div className="space-y-6">
-                                        <div className="space-y-4">
-                                            <div className="h-2 w-1/3 bg-white/10 rounded" />
-                                            <div className="h-8 w-full bg-white/5 rounded" />
-                                            <div className="h-8 w-full bg-white/5 rounded" />
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div className="h-2 w-1/2 bg-white/10 rounded" />
-                                            <div className="h-32 w-full bg-white/5 rounded" />
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -107,7 +92,7 @@ export function UploadMockup() {
 
 function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
-        <span className={`inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary ${className}`}>
+        <span className={`inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 ${className}`}>
             {children}
         </span>
     );

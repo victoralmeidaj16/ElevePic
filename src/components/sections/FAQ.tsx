@@ -54,7 +54,7 @@ export function FAQ() {
                                 className="flex items-center justify-between w-full p-6 text-left"
                             >
                                 <span className="text-lg font-medium">{faq.question}</span>
-                                <span className="ml-4 shrink-0 text-primary">
+                                <span className="ml-4 shrink-0 text-blue-500">
                                     {openIndex === index ? (
                                         <Minus className="w-5 h-5" />
                                     ) : (

@@ -2,64 +2,90 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+
 import { Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/Card";
 
 const TIERS = [
     {
-        name: "Starter",
-        price: "$29",
-        description: "Perfect for trying out your first professional headshots.",
+        id: "starter",
+        name: "Inicial",
+        price: "R$ 29",
+        description: "Perfeito para testar seus primeiros headshots profissionais.",
         features: [
-            "40 AI-Generated Photos",
-            "2 Unique Styles",
-            "Standard Resolution",
-            "24h Delivery",
+            "40 Fotos Geradas por IA",
+            "2 Estilos Únicos",
+            "Resolução Padrão",
+            "Entrega em 24h",
         ],
-        cta: "Get Started",
+        cta: "Começar Agora",
         popular: false,
     },
     {
-        name: "Pro",
-        price: "$59",
-        description: "The most popular choice for professionals and creators.",
+        id: "pro",
+        name: "Profissional",
+        price: "R$ 59",
+        description: "A escolha mais popular para profissionais e criadores.",
         features: [
-            "100 AI-Generated Photos",
-            "5 Unique Styles",
-            "High Resolution (4K)",
-            "Priority 2h Delivery",
-            "Commercial License",
+            "100 Fotos Geradas por IA",
+            "5 Estilos Únicos",
+            "Alta Resolução (4K)",
+            "Prioridade: Entrega em 2h",
+            "Licença Comercial",
         ],
-        cta: "Go Pro",
+        cta: "Escolher Profissional",
         popular: true,
     },
     {
-        name: "Ultimate",
-        price: "$149",
-        description: "For agencies and power users needing maximum variety.",
+        id: "business",
+        name: "Empresarial",
+        price: "R$ 149",
+        description: "Para agências e power users que precisam de variedade máxima.",
         features: [
-            "300 AI-Generated Photos",
-            "All Styles Unlocked",
-            "Ultra-High Resolution",
-            "Priority 1h Delivery",
-            "Dedicated Support",
-            "Raw Fles Included",
+            "300 Fotos Geradas por IA",
+            "Todos os Estilos Liberados",
+            "Ultra-Alta Resolução",
+            "Prioridade: Entrega em 1h",
+            "Suporte Dedicado",
+            "Arquivos RAW Incluídos",
         ],
-        cta: "Contact Sales",
+        cta: "Falar com Vendas",
         popular: false,
     },
 ];
 
 export function Pricing() {
+    const handleCheckout = async (tierId: string) => {
+        try {
+            const response = await fetch("/api/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ priceId: tierId }),
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                console.error("Failed to create checkout session");
+            }
+        } catch (error) {
+            console.error("Error during checkout:", error);
+        }
+    };
+
     return (
-        <section id="pricing" className="py-24 relative">
+        <section id="pricing" className="py-24 relative bg-background">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16 space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-                        Simple, Transparent Pricing
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+                        Investimento Único
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl text-lg">
-                        Pay once, keep forever. No subscription required.
+                    <p className="text-slate-400 max-w-2xl text-lg">
+                        Sem assinaturas mensais. Pague uma vez, use para sempre.
                     </p>
                 </div>
 
@@ -73,28 +99,31 @@ export function Pricing() {
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                             className="relative"
                         >
-                            <Card className={`h-full flex flex-col border-white/5 hover:border-primary/50 transition-colors duration-300 ${tier.popular ? 'bg-primary/5 border-primary/20 shadow-lg shadow-primary/30 scale-105 z-10' : 'bg-black/20'}`}>
+                            <Card className={`h-full flex flex-col transition-all duration-300 rounded-2xl ${tier.popular
+                                ? 'bg-slate-900 border-blue-500/50 shadow-2xl shadow-blue-900/20 scale-105 z-10'
+                                : 'bg-slate-950/50 border-white/5 hover:border-white/10'
+                                }`}>
                                 {tier.popular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-xs font-bold uppercase tracking-widest text-white shadow-lg">
-                                        Most Popular
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-600 text-xs font-bold uppercase tracking-widest text-white shadow-lg">
+                                        Mais Escolhido
                                     </div>
                                 )}
 
                                 <CardHeader>
-                                    <CardTitle className="text-xl font-medium text-muted-foreground">{tier.name}</CardTitle>
+                                    <CardTitle className="text-xl font-medium text-slate-300">{tier.name}</CardTitle>
                                     <div className="flex items-baseline gap-1 mt-4">
-                                        <span className="text-4xl font-bold">{tier.price}</span>
-                                        <span className="text-muted-foreground">/pack</span>
+                                        <span className="text-4xl font-bold text-white">{tier.price}</span>
+                                        <span className="text-slate-500 text-sm">/pacote</span>
                                     </div>
-                                    <CardDescription className="mt-2">{tier.description}</CardDescription>
+                                    <CardDescription className="mt-2 text-slate-400">{tier.description}</CardDescription>
                                 </CardHeader>
 
                                 <CardContent className="flex-1">
-                                    <ul className="space-y-3 mt-4">
+                                    <ul className="space-y-4 mt-4">
                                         {tier.features.map((feature) => (
-                                            <li key={feature} className="flex items-start gap-3 text-sm">
-                                                <Check className="w-5 h-5 text-primary shrink-0" />
-                                                <span className="text-muted-foreground">{feature}</span>
+                                            <li key={feature} className="flex items-start gap-3 text-sm text-slate-300">
+                                                <Check className={`w-5 h-5 shrink-0 ${tier.popular ? 'text-blue-500' : 'text-slate-500'}`} />
+                                                <span>{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -102,9 +131,13 @@ export function Pricing() {
 
                                 <CardFooter>
                                     <Button
-                                        className={`w-full ${tier.popular ? 'bg-primary hover:bg-primary/90 shadow-md' : ''}`}
+                                        className={`w-full rounded-xl py-6 ${tier.popular
+                                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/20'
+                                            : 'bg-white/5 hover:bg-white/10 text-white border border-white/5'
+                                            }`}
                                         variant={tier.popular ? 'default' : 'outline'}
                                         size="lg"
+                                        onClick={() => handleCheckout(tier.id)}
                                     >
                                         {tier.cta}
                                     </Button>

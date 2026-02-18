@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getUserImages, uploadUserImage, UserImage } from "@/lib/user-storage";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import {
@@ -17,8 +19,11 @@ import {
     Smile,
     User,
     AlertCircle,
+    Image as ImageIcon,
+    Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -146,10 +151,10 @@ function StepIndicator({ current }: { current: Step }) {
                         <div className="flex flex-col items-center gap-1">
                             <div
                                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${done
-                                        ? "bg-primary text-white"
-                                        : active
-                                            ? "bg-primary text-white ring-4 ring-primary/30"
-                                            : "bg-white/10 text-muted-foreground"
+                                    ? "bg-primary text-white"
+                                    : active
+                                        ? "bg-primary text-white ring-4 ring-primary/30"
+                                        : "bg-white/10 text-muted-foreground"
                                     }`}
                             >
                                 {done ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
@@ -263,42 +268,71 @@ function TutorialStep({ onNext }: { onNext: () => void }) {
 // ─── Upload Step ───────────────────────────────────────────────────────────────
 
 function UploadStep({
-    files,
-    onFiles,
+    selectedUrls,
+    onSelectUrl,
+    onRemoveUrl,
     onNext,
     onBack,
 }: {
-    files: File[];
-    onFiles: (f: File[]) => void;
+    selectedUrls: string[];
+    onSelectUrl: (url: string) => void;
+    onRemoveUrl: (url: string) => void;
     onNext: () => void;
     onBack: () => void;
 }) {
+    const { user } = useAuth();
     const inputRef = useRef<HTMLInputElement>(null);
     const [dragging, setDragging] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [galleryImages, setGalleryImages] = useState<UserImage[]>([]);
+    const [activeTab, setActiveTab] = useState<"new" | "library">("new");
 
-    const addFiles = useCallback(
-        (newFiles: FileList | null) => {
-            if (!newFiles) return;
-            const valid = Array.from(newFiles).filter((f) =>
-                ["image/jpeg", "image/png", "image/webp"].includes(f.type)
-            );
-            const combined = [...files, ...valid].slice(0, 14);
-            onFiles(combined);
-        },
-        [files, onFiles]
-    );
+    // Fetch user images on mount
+    useEffect(() => {
+        if (user) {
+            getUserImages(user.uid).then(setGalleryImages);
+        }
+    }, [user]);
 
-    const removeFile = (idx: number) => {
-        onFiles(files.filter((_, i) => i !== idx));
+    const handleUpload = async (newFiles: FileList | null) => {
+        if (!newFiles || !user) return;
+        setUploading(true);
+        setActiveTab("library");
+
+        const files = Array.from(newFiles).filter((f) =>
+            ["image/jpeg", "image/png", "image/webp"].includes(f.type)
+        );
+
+        try {
+            const uploadPromises = files.map(file => uploadUserImage(user.uid, file));
+            const baseUrls = await Promise.all(uploadPromises);
+
+            // Refresh gallery
+            getUserImages(user.uid).then(imgs => {
+                setGalleryImages(imgs);
+                // Auto-select uploaded images
+                imgs.filter(img => baseUrls.includes(img.url)).forEach(img => {
+                    if (!selectedUrls.includes(img.url)) {
+                        onSelectUrl(img.url);
+                    }
+                });
+            });
+
+        } catch (error) {
+            console.error("Upload failed:", error);
+            alert("Falha no upload. Tente novamente.");
+        } finally {
+            setUploading(false);
+        }
     };
 
     const onDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setDragging(false);
-        addFiles(e.dataTransfer.files);
+        handleUpload(e.dataTransfer.files);
     };
 
-    const canProceed = files.length >= 3;
+    const canProceed = selectedUrls.length >= 3;
 
     return (
         <motion.div
@@ -311,68 +345,122 @@ function UploadStep({
             <div className="text-center space-y-1">
                 <h2 className="text-2xl font-bold">Upload das suas fotos</h2>
                 <p className="text-muted-foreground text-sm">
-                    Envie entre 3 e 14 fotos · JPG, PNG ou WEBP · Máx. 5MB cada
+                    Selecione da sua biblioteca ou faça upload de novas fotos.
                 </p>
             </div>
 
-            {/* Drop Zone */}
-            <div
-                onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-                onDragLeave={() => setDragging(false)}
-                onDrop={onDrop}
-                onClick={() => inputRef.current?.click()}
-                className={`relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all duration-200 ${dragging
-                        ? "border-primary bg-primary/10"
-                        : "border-white/20 bg-white/5 hover:border-primary/50 hover:bg-white/10"
-                    }`}
-            >
-                <input
-                    ref={inputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => addFiles(e.target.files)}
-                />
-                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CloudUpload className="w-7 h-7 text-primary" />
-                </div>
-                <div className="text-center">
-                    <p className="font-semibold">Arraste as fotos aqui</p>
-                    <p className="text-sm text-muted-foreground">ou clique para selecionar</p>
-                </div>
-                <span className={`text-xs px-3 py-1 rounded-full border ${canProceed ? "border-green-500/30 bg-green-500/10 text-green-400" : "border-white/10 bg-white/5 text-muted-foreground"
-                    }`}>
-                    {files.length}/14 fotos selecionadas {canProceed ? "✓" : `(mín. 3)`}
-                </span>
+            {/* Tabs */}
+            <div className="flex p-1 bg-white/5 rounded-xl">
+                <button
+                    onClick={() => setActiveTab("new")}
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "new" ? "bg-primary text-white shadow-lg" : "text-muted-foreground hover:text-white"
+                        }`}
+                >
+                    Novo Upload
+                </button>
+                <button
+                    onClick={() => setActiveTab("library")}
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === "library" ? "bg-primary text-white shadow-lg" : "text-muted-foreground hover:text-white"
+                        }`}
+                >
+                    Minha Biblioteca ({galleryImages.length})
+                </button>
             </div>
 
-            {/* Previews */}
-            {files.length > 0 && (
-                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-                    {files.map((file, i) => {
-                        const url = URL.createObjectURL(file);
-                        return (
-                            <div key={i} className="relative group aspect-square">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={url}
-                                    alt={`foto ${i + 1}`}
-                                    className="w-full h-full object-cover rounded-lg border border-white/10"
-                                />
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); removeFile(i); }}
-                                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                    <X className="w-3 h-3 text-white" />
-                                </button>
+            {/* Upload Area */}
+            {activeTab === "new" && (
+                <div
+                    onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={onDrop}
+                    onClick={() => inputRef.current?.click()}
+                    className={`relative border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all duration-200 ${dragging
+                        ? "border-primary bg-primary/10"
+                        : "border-white/20 bg-white/5 hover:border-primary/50 hover:bg-white/10"
+                        }`}
+                >
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => handleUpload(e.target.files)}
+                    />
+                    {uploading ? (
+                        <div className="flex flex-col items-center">
+                            <Loader2 className="w-10 h-10 text-primary animate-spin mb-2" />
+                            <p className="font-semibold">Enviando fotos...</p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                                <CloudUpload className="w-8 h-8 text-primary" />
                             </div>
-                        );
-                    })}
+                            <div className="text-center">
+                                <p className="font-semibold text-lg">Arraste as fotos aqui</p>
+                                <p className="text-sm text-muted-foreground">ou clique para selecionar</p>
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
 
-            <div className="flex gap-3">
+            {/* Gallery / Selection Area */}
+            {activeTab === "library" && (
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                            Selecione pelo menos 3 fotos ({selectedUrls.length} selecionadas)
+                        </p>
+                        {selectedUrls.length > 0 && (
+                            <button
+                                onClick={() => selectedUrls.forEach(url => onRemoveUrl(url))}
+                                className="text-xs text-red-400 hover:text-red-300"
+                            >
+                                Limpar seleção
+                            </button>
+                        )}
+                    </div>
+
+                    {galleryImages.length === 0 ? (
+                        <div className="text-center py-12 text-muted-foreground bg-white/5 rounded-xl border border-white/10">
+                            <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                            <p>Sua biblioteca está vazia.</p>
+                            <p className="text-sm">Faça upload de novas fotos para começar.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            {galleryImages.map((img) => {
+                                const isSelected = selectedUrls.includes(img.url);
+                                return (
+                                    <div
+                                        key={img.id}
+                                        onClick={() => isSelected ? onRemoveUrl(img.url) : onSelectUrl(img.url)}
+                                        className={`relative group aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${isSelected
+                                            ? "border-primary ring-2 ring-primary/30"
+                                            : "border-transparent opacity-70 hover:opacity-100"
+                                            }`}
+                                    >
+                                        <img
+                                            src={img.url}
+                                            alt="User upload"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        {isSelected && (
+                                            <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                                                <CheckCircle2 className="w-8 h-8 text-white drop-shadow-lg" />
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <div className="flex gap-3 pt-4 border-t border-white/10">
                 <Button variant="outline" onClick={onBack} className="border-white/10">
                     ← Voltar
                 </Button>
@@ -382,7 +470,7 @@ function UploadStep({
                     className="flex-1 bg-primary hover:bg-primary/90 font-semibold"
                     size="lg"
                 >
-                    Continuar — Escolher Estilo
+                    Continuar ({selectedUrls.length}/14)
                     <ChevronRight className="ml-2 w-5 h-5" />
                 </Button>
             </div>
@@ -426,8 +514,8 @@ function StyleStep({
                         key={style.id}
                         onClick={() => onSelect(style.id)}
                         className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-200 hover:scale-[1.02] ${selected === style.id
-                                ? "border-primary bg-primary/10 shadow-lg shadow-primary/20"
-                                : "border-white/10 bg-white/5 hover:border-white/20"
+                            ? "border-primary bg-primary/10 shadow-lg shadow-primary/20"
+                            : "border-white/10 bg-white/5 hover:border-white/20"
                             }`}
                     >
                         {selected === style.id && (
@@ -584,31 +672,35 @@ function ResultsStep({
 
 export function UploadWizard() {
     const [step, setStep] = useState<Step>("tutorial");
-    const [files, setFiles] = useState<File[]>([]);
+    // const [files, setFiles] = useState<File[]>([]); // DEPRECATED: We now use URLs
+    const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
     const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [generatedImages, setGeneratedImages] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     const handleGenerate = async () => {
-        if (!selectedStyle || files.length < 3) return;
+        if (!selectedStyle || selectedUrls.length < 3) return;
         setLoading(true);
         setError(null);
         setStep("generating");
 
         try {
-            const formData = new FormData();
-            formData.append("style", selectedStyle);
-            files.forEach((f) => formData.append("images", f));
-
-            const res = await fetch("/api/generate", {
+            // Note: We are sending URLs now, not files
+            const response = await fetch("/api/generate", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    style: selectedStyle,
+                    imageUrls: selectedUrls,
+                }),
             });
 
-            const data = await res.json();
+            const data = await response.json();
 
-            if (!res.ok) throw new Error(data.error ?? "Erro ao gerar imagens");
+            if (!response.ok) throw new Error(data.error ?? "Erro ao gerar imagens");
 
             setGeneratedImages(data.images);
             setStep("results");
@@ -623,7 +715,7 @@ export function UploadWizard() {
 
     const reset = () => {
         setStep("tutorial");
-        setFiles([]);
+        setSelectedUrls([]);
         setSelectedStyle(null);
         setGeneratedImages([]);
         setError(null);
@@ -648,8 +740,9 @@ export function UploadWizard() {
                         )}
                         {step === "upload" && (
                             <UploadStep
-                                files={files}
-                                onFiles={setFiles}
+                                selectedUrls={selectedUrls}
+                                onSelectUrl={(url) => setSelectedUrls(prev => [...prev, url])}
+                                onRemoveUrl={(url) => setSelectedUrls(prev => prev.filter(u => u !== url))}
                                 onNext={() => setStep("style")}
                                 onBack={() => setStep("tutorial")}
                             />

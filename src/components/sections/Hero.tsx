@@ -6,9 +6,9 @@ import { Sparkles, ArrowRight } from "lucide-react";
 
 export function Hero() {
     return (
-        <section className="relative flex flex-col items-center justify-center min-h-[90vh] py-20 overflow-hidden text-center">
-            {/* Background Elements */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/20 blur-[120px] rounded-full -z-10" />
+        <section className="relative flex flex-col items-center justify-center min-h-[90vh] py-20 overflow-hidden text-center bg-background">
+            {/* Subtle Gradient Background - Strict Navy/Blue */}
+            <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-900/5 to-transparent pointer-events-none" />
 
             <div className="container px-4 md:px-6 relative z-10 flex flex-col items-center gap-8">
                 <motion.div
@@ -16,9 +16,8 @@ export function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-purple-300 backdrop-blur-sm mb-6">
-                        <Sparkles className="w-4 h-4" />
-                        <span>AI-Powered Professional Imagery</span>
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/10 border border-blue-500/20 text-sm font-semibold text-blue-400 mb-6">
+                        <span>Identidade Profissional Digital</span>
                     </span>
                 </motion.div>
 
@@ -26,19 +25,20 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+                    className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white"
                 >
-                    Turn your selfies into <br />
-                    <span className="text-primary">Professional Headshots</span>
+                    Sua imagem no nível <br />
+                    <span className="text-blue-500">da sua carreira.</span>
                 </motion.h1>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-8 leading-relaxed"
+                    className="text-slate-300 text-lg md:text-xl max-w-2xl mb-8 leading-relaxed"
                 >
-                    Stop spending hundreds on photographers. Get studio-quality headshots in minutes with our advanced AI technology.
+                    Pareça confiante. Sem parecer artificial. <br />
+                    Foto profissional. Sem estúdio.
                 </motion.p>
 
                 <motion.div
@@ -47,24 +47,15 @@ export function Hero() {
                     transition={{ duration: 0.6, delay: 0.6 }}
                     className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
                 >
-                    <Button size="xl" className="group bg-primary hover:bg-primary/90 transition-all font-semibold">
-                        Create Your Photos
+                    <Button size="xl" className="group bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all font-semibold px-8 py-6 text-lg shadow-lg shadow-blue-900/20">
+                        Criar minha foto
                         <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                    <Button size="xl" variant="outline" className="border-white/10 hover:bg-white/5">
-                        View Gallery
+                    <Button size="xl" variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 rounded-2xl px-8 py-6 text-lg">
+                        Ver Galeria
                     </Button>
                 </motion.div>
             </div>
-
-            {/* Floating Abstract Elements */}
-            {/* Abstract Shapes - Simplified for new brand */}
-            <div
-                className="absolute top-1/4 left-10 w-24 h-24 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 rotate-12 -z-10 hidden lg:block"
-            />
-            <div
-                className="absolute bottom-1/4 right-10 w-32 h-32 rounded-full bg-white/5 backdrop-blur-md border border-white/10 -z-10 hidden lg:block"
-            />
         </section>
     );
 }
