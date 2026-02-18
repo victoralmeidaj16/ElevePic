@@ -44,7 +44,7 @@ export function Sidebar() {
             {/* Logo */}
             <div className="p-6 border-b border-white/5">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center font-bold text-white">
+                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-bold text-white">
                         E
                     </div>
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">

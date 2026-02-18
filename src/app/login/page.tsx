@@ -22,7 +22,7 @@ export default function LoginPage() {
 
         // Set mock token
         localStorage.setItem("elevepic_token", "mock_token_12345");
-        
+
         // Redirect to dashboard
         router.push("/dashboard");
     };
@@ -57,7 +57,7 @@ export default function LoginPage() {
                             </div>
                             <Input id="password" type="password" required />
                         </div>
-                        <Button disabled={isLoading} type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                        <Button disabled={isLoading} type="submit" className="w-full bg-primary hover:bg-primary/90 hover:shadow-lg">
                             {isLoading ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (

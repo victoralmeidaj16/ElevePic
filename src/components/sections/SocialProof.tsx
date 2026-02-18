@@ -31,9 +31,9 @@ const testimonials = [
 
 export function SocialProof() {
     return (
-        <section className="py-24 bg-gradient-to-b from-black/40 to-background relative overflow-hidden">
+        <section className="py-24 bg-gradient-to-b from-black/20 to-background relative overflow-hidden">
             {/* Background elements */}
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/10 via-background to-background -z-10" />
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/5 via-background to-background -z-10" />
 
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16 space-y-4">
@@ -65,7 +65,7 @@ export function SocialProof() {
                                         "{testimonial.content}"
                                     </p>
                                     <div className="flex items-center gap-4 mt-auto">
-                                        <Avatar className="h-12 w-12 border-2 border-purple-500/50">
+                                        <Avatar className="h-12 w-12 border-2 border-primary/20">
                                             <AvatarImage src={testimonial.image} alt={testimonial.name} />
                                             <AvatarFallback><User className="h-6 w-6" /></AvatarFallback>
                                         </Avatar>

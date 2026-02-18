@@ -92,8 +92,8 @@ export function UploadWizard() {
                                             key={style}
                                             onClick={() => setSelectedStyle(style)}
                                             className={`aspect-square rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all hover:scale-105 ${selectedStyle === style
-                                                    ? "border-purple-500 bg-purple-500/10"
-                                                    : "border-white/10 bg-white/5 hover:border-white/20"
+                                                ? "border-purple-500 bg-purple-500/10"
+                                                : "border-white/10 bg-white/5 hover:border-white/20"
                                                 }`}
                                         >
                                             {style}
@@ -105,7 +105,7 @@ export function UploadWizard() {
                                         size="lg"
                                         onClick={handleGenerate}
                                         disabled={loading || !selectedStyle}
-                                        className="bg-gradient-to-r from-purple-600 to-pink-600"
+                                        className="bg-primary hover:bg-primary/90"
                                     >
                                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                                         {loading ? "Generating..." : "Generate Magic"}

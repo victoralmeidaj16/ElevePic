@@ -14,7 +14,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-4">
                     {/* Credits Widget */}
-                    <div className="flex items-center gap-3 bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-white/10 px-4 py-2 rounded-full">
+                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
                         <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                         <span className="font-bold text-white">12 Créditos</span>
                     </div>

@@ -12,7 +12,7 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                     {/* Brand Column */}
                     <div className="space-y-4">
-                        <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+                        <Link href="/" className="text-2xl font-bold text-white">
                             ElevePic
                         </Link>
                         <p className="text-muted-foreground leading-relaxed">
@@ -57,9 +57,9 @@ export function Footer() {
                         <div className="flex gap-2">
                             <Input
                                 placeholder="Enter your email"
-                                className="bg-white/5 border-white/10 focus:border-purple-500 duration-300"
+                                className="bg-white/5 border-white/10 focus:border-primary duration-300"
                             />
-                            <Button size="icon" className="bg-purple-600 hover:bg-purple-700">
+                            <Button size="icon" className="bg-primary hover:bg-primary/90">
                                 <Send className="h-4 w-4" />
                             </Button>
                         </div>
@@ -84,7 +84,7 @@ function SocialLink({ href, icon: Icon }: { href: string; icon: any }) {
     return (
         <Link
             href={href}
-            className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 hover:text-purple-400 transition-all duration-300"
+            className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 hover:text-primary transition-all duration-300"
         >
             <Icon className="w-5 h-5" />
         </Link>

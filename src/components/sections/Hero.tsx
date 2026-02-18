@@ -26,47 +26,44 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-5xl md:text-7xl font-bold tracking-tight max-w-4xl"
+                    className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
                 >
-                    Transform Your Photos into <br />
-                    <span className="text-gradient-brand">Digital Masterpieces</span>
+                    Turn your selfies into <br />
+                    <span className="text-primary">Professional Headshots</span>
                 </motion.h1>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-lg md:text-xl text-muted-foreground max-w-2xl"
+                    className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-8 leading-relaxed"
                 >
-                    Elevate your personal brand with ElevePic. Upload your photos and let our advanced AI reimagine you in stunning, professional styles.
+                    Stop spending hundreds on photographers. Get studio-quality headshots in minutes with our advanced AI technology.
                 </motion.p>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row gap-4 w-full justify-center"
+                    className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
                 >
-                    <Button size="xl" className="group bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-all">
-                        Start Creating
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <Button size="xl" className="group bg-primary hover:bg-primary/90 transition-all font-semibold">
+                        Create Your Photos
+                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                     <Button size="xl" variant="outline" className="border-white/10 hover:bg-white/5">
-                        Explore Styles
+                        View Gallery
                     </Button>
                 </motion.div>
             </div>
 
             {/* Floating Abstract Elements */}
-            <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-1/4 left-10 w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-md border border-white/10 rotate-12 -z-10 hidden lg:block"
+            {/* Abstract Shapes - Simplified for new brand */}
+            <div
+                className="absolute top-1/4 left-10 w-24 h-24 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 rotate-12 -z-10 hidden lg:block"
             />
-            <motion.div
-                animate={{ y: [0, 20, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-1/4 right-10 w-32 h-32 rounded-full bg-gradient-to-tr from-pink-500/20 to-orange-500/20 backdrop-blur-md border border-white/10 -z-10 hidden lg:block"
+            <div
+                className="absolute bottom-1/4 right-10 w-32 h-32 rounded-full bg-white/5 backdrop-blur-md border border-white/10 -z-10 hidden lg:block"
             />
         </section>
     );

@@ -73,9 +73,9 @@ export function Pricing() {
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                             className="relative"
                         >
-                            <Card className={`h-full flex flex-col border-white/5 hover:border-primary/50 transition-colors duration-300 ${tier.popular ? 'bg-primary/5 border-primary/20 shadow-[0_0_30px_rgba(168,85,247,0.15)] scale-105 z-10' : 'bg-black/20'}`}>
+                            <Card className={`h-full flex flex-col border-white/5 hover:border-primary/50 transition-colors duration-300 ${tier.popular ? 'bg-primary/5 border-primary/20 shadow-lg shadow-primary/30 scale-105 z-10' : 'bg-black/20'}`}>
                                 {tier.popular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-xs font-bold uppercase tracking-widest text-white shadow-lg">
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-xs font-bold uppercase tracking-widest text-white shadow-lg">
                                         Most Popular
                                     </div>
                                 )}
@@ -102,7 +102,7 @@ export function Pricing() {
 
                                 <CardFooter>
                                     <Button
-                                        className={`w-full ${tier.popular ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]' : ''}`}
+                                        className={`w-full ${tier.popular ? 'bg-primary hover:bg-primary/90 shadow-md' : ''}`}
                                         variant={tier.popular ? 'default' : 'outline'}
                                         size="lg"
                                     >

@@ -3,37 +3,43 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Deep Navy */
+    --background: 222 47% 11%; 
+    --foreground: 0 0% 100%;
 
-    --card: 240 10% 6.9%;
-    /* Slightly lighter than background */
-    --card-foreground: 0 0% 98%;
+    /* Slate 800 for Cards */
+    --card: 215 28% 17%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 263 70% 50%;
-    /* Deep Purple */
-    --primary-foreground: 210 40% 98%;
+    /* Elevation Blue */
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+    /* Slate 700 */
+    --secondary: 215 16% 47%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    /* Slate 700 */
+    --muted: 215 16% 47%;
+    --muted-foreground: 214 32% 84%;
 
-    --accent: 263 70% 50%;
-    --accent-foreground: 0 0% 98%;
+    /* Elevation Blue */
+    --accent: 221 83% 53%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    /* Soft Gray / Slate Gray for borders */
+    --border: 215 16% 47%;
+    --input: 215 16% 47%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.75rem;
+    /* 16px Radius */
+    --radius: 1rem;
   }
 }
 
@@ -50,14 +56,14 @@
   }
 
   .glass-card {
-    @apply bg-card/40 backdrop-blur-md border border-white/5 shadow-xl;
+    @apply bg-card/40 backdrop-blur-md border border-white/10 shadow-xl;
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/90 to-white/60;
+    @apply text-white;
   }
 
   .text-gradient-brand {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600;
+    @apply text-primary;
   }
 }

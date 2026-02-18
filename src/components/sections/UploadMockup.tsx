@@ -21,7 +21,7 @@ export function UploadMockup() {
 
                 <div className="relative max-w-5xl mx-auto">
                     {/* Decorative Glow */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-[100px] -z-10" />
+                    <div className="absolute inset-0 bg-primary/10 blur-[100px] -z-10" />
 
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
@@ -29,7 +29,7 @@ export function UploadMockup() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <Card className="border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden">
+                        <Card className="border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden shadow-2xl">
                             <div className="flex border-b border-white/10">
                                 <div className="p-4 flex gap-2">
                                     <div className="w-3 h-3 rounded-full bg-red-500/50" />
@@ -51,7 +51,7 @@ export function UploadMockup() {
                                     <div className="space-y-2">
                                         <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Style</label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            <div className="aspect-square rounded-md bg-purple-500/20 border border-purple-500/50" />
+                                            <div className="aspect-square rounded-md bg-primary/20 border border-primary/50" />
                                             <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
                                             <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
                                             <div className="aspect-square rounded-md bg-white/5 border border-white/5" />
@@ -75,7 +75,7 @@ export function UploadMockup() {
 
                                     <div className="mt-8 flex gap-4">
                                         <Button variant="ghost" className="text-muted-foreground">Clear</Button>
-                                        <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
+                                        <Button className="bg-primary hover:bg-primary/90">
                                             <Wand2 className="w-4 h-4 mr-2" />
                                             Generate Preview
                                         </Button>
@@ -107,7 +107,7 @@ export function UploadMockup() {
 
 function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
-        <span className={`inline-flex items-center rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-400 ${className}`}>
+        <span className={`inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary ${className}`}>
             {children}
         </span>
     );

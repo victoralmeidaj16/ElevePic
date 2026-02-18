@@ -32,9 +32,9 @@ const benefits = [
         icon: ShieldCheck,
         title: "Private & Secure",
         description: "Your photos are yours. We use enterprise-grade encryption and never share your data.",
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
-        border: "border-purple-500/20"
+        color: "text-primary",
+        bg: "bg-primary/10",
+        border: "border-primary/20"
     }
 ];
 

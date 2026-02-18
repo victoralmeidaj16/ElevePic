@@ -85,7 +85,7 @@ const CATEGORIES = {
                 name: "Profissão",
                 description: "Ensaios focados em carreiras e profissões",
                 icon: Briefcase,
-                color: "from-pink-600 to-purple-900",
+                color: "from-blue-600 to-slate-900",
                 examples: [
                     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop",
@@ -273,7 +273,7 @@ export function Gallery() {
                     </div>
 
                     <div className="mt-6 flex justify-end">
-                        <Button className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-pink-600">
+                        <Button className="w-full md:w-auto bg-primary hover:bg-primary/90">
                             Escolher este estilo
                         </Button>
                     </div>
