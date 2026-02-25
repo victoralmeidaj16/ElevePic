@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { STYLES } from "@/lib/styles-data";
 import { generateHeadshots } from "@/lib/gemini";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
     try {
         const body = await req.json();
