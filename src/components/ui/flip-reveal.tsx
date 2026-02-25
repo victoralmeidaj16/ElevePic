@@ -4,7 +4,7 @@ import { ComponentProps, useRef } from "react";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import Flip from "gsap/Flip";
+import Flip from "gsap/dist/Flip";
 
 gsap.registerPlugin(Flip);
 
