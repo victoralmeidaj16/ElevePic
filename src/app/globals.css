@@ -3,44 +3,81 @@
 
 @layer base {
   :root {
-    /* Deep Navy */
-    --background: 222 47% 11%; 
-    --foreground: 0 0% 100%;
-
-    /* Slate 800 for Cards */
-    --card: 215 28% 17%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 222 47% 11%;
-    --popover-foreground: 0 0% 100%;
-
-    /* Elevation Blue */
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Slate 700 */
-    --secondary: 215 16% 47%;
-    --secondary-foreground: 0 0% 100%;
-
-    /* Slate 700 */
-    --muted: 215 16% 47%;
-    --muted-foreground: 214 32% 84%;
-
-    /* Elevation Blue */
-    --accent: 221 83% 53%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    /* Soft Gray / Slate Gray for borders */
-    --border: 215 16% 47%;
-    --input: 215 16% 47%;
-    --ring: 221 83% 53%;
-
-    /* 16px Radius */
-    --radius: 1rem;
+    /* Dark theme as default */
+    --card: #0f1117;
+    --ring: #3b82f6;
+    --input: #1e2030;
+    --muted: #1a1d2e;
+    --accent: #3b82f6;
+    --border: #1e2030;
+    --radius: 0.625rem;
+    --shadow: 0 2px 8px -2px rgba(0, 0, 0, .6);
+    --chart-1: #818cf8;
+    --chart-2: #34d399;
+    --chart-3: #60a5fa;
+    --chart-4: #f87171;
+    --chart-5: #a78bfa;
+    --popover: #0f1117;
+    --primary: #3b82f6;
+    --spacing: 0.25rem;
+    --font-mono: monospace;
+    --font-sans: "Inter", sans-serif;
+    --secondary: #1a1d2e;
+    --shadow-lg: 0 0 12px rgba(0, 0, 0, .5);
+    --shadow-md: 0 2px 12px -2px rgba(0, 0, 0, .6);
+    --shadow-sm: 0 2px 6px -2px rgba(0, 0, 0, .5);
+    --shadow-xl: 0 0 16px rgba(0, 0, 0, .5);
+    --background: #080a12;
+    --font-serif: serif;
+    --foreground: #e8eaf0;
+    --shadow-2xl: 0 0 28px rgba(0, 0, 0, .6);
+    --destructive: #ef4444;
+    --card-foreground: #e8eaf0;
+    --muted-foreground: #8b8fa8;
+    --accent-foreground: #ffffff;
+    --popover-foreground: #e8eaf0;
+    --primary-foreground: #ffffff;
+    --secondary-foreground: #e8eaf0;
+    --destructive-foreground: #ffffff;
   }
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-radius: var(--radius);
+  --color-shadow: var(--shadow);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-spacing: var(--spacing);
+  --color-font-mono: var(--font-mono);
+  --color-font-sans: var(--font-sans);
+  --color-secondary: var(--secondary);
+  --color-shadow-lg: var(--shadow-lg);
+  --color-shadow-md: var(--shadow-md);
+  --color-shadow-sm: var(--shadow-sm);
+  --color-shadow-xl: var(--shadow-xl);
+  --color-background: var(--background);
+  --color-font-serif: var(--font-serif);
+  --color-foreground: var(--foreground);
+  --color-shadow-2xl: var(--shadow-2xl);
+  --color-destructive: var(--destructive);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
 }
 
 @layer base {

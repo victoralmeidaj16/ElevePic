@@ -43,7 +43,7 @@ const CATEGORIES = {
                 name: "Externo",
                 description: "Ensaios em locações externas",
                 icon: Trees,
-                color: "from-green-600 to-emerald-900",
+                color: "from-blue-600 to-indigo-900",
                 examples: [
                     "https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=800&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop",
@@ -89,7 +89,7 @@ const CATEGORIES = {
                 examples: [
                     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1598550832205-d5b54406b520?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800&auto=format&fit=crop"
                 ]
             },
             {

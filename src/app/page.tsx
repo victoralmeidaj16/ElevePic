@@ -8,6 +8,7 @@ import { Pricing } from "@/components/sections/Pricing";
 import { FAQ } from "@/components/sections/FAQ";
 import { Benefits } from "@/components/sections/Benefits";
 import { SocialProof } from "@/components/sections/SocialProof";
+import { Testimonials } from "@/components/sections/Testimonials";
 
 import { TransformationShowcase } from "@/components/sections/TransformationShowcase";
 
@@ -19,6 +20,7 @@ export default function Home() {
             <TransformationShowcase />
             <SocialProof />
             <Benefits />
+            <Testimonials />
             <Gallery />
             <Steps />
             <UploadMockup />

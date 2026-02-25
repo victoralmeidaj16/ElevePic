@@ -1,6 +1,5 @@
-import { storage, db } from "./firebase";
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
-import { collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "firebase/firestore";
+import { storage } from "./firebase";
+import { ref, uploadBytes, getDownloadURL, listAll, getMetadata, deleteObject } from "firebase/storage";
 
 export interface UserImage {
     id: string;
@@ -23,49 +22,51 @@ export async function uploadUserImage(userId: string, file: File): Promise<strin
     await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
 
-    // Save metadata to Firestore for easier querying
-    await saveImageMetadata(userId, url, path);
-
     return url;
 }
 
 /**
- * Saves image metadata to Firestore.
+ * Fetches the user's uploaded images directly from Firebase Storage.
+ * Does not depend on Firestore.
  */
-async function saveImageMetadata(userId: string, url: string, path: string) {
+export async function getUserImages(userId: string): Promise<UserImage[]> {
     try {
-        await addDoc(collection(db, "user_images"), {
-            userId,
-            url,
-            path,
-            createdAt: serverTimestamp(),
-        });
+        const uploadsRef = ref(storage, `users/${userId}/uploads`);
+        const result = await listAll(uploadsRef);
+
+        const images = await Promise.all(
+            result.items.map(async (item) => {
+                const url = await getDownloadURL(item);
+                let createdAt = new Date();
+                try {
+                    const meta = await getMetadata(item);
+                    if (meta.timeCreated) {
+                        createdAt = new Date(meta.timeCreated);
+                    }
+                } catch {
+                    // fallback to now
+                }
+                return {
+                    id: item.name,
+                    url,
+                    createdAt,
+                    path: item.fullPath,
+                };
+            })
+        );
+
+        // Sort by createdAt descending
+        return images.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     } catch (error) {
-        console.error("Error saving image metadata:", error);
-        // We ensure the upload succeeds even if metadata fails, though not ideal.
+        console.error("Error fetching user images from Storage:", error);
+        return [];
     }
 }
 
 /**
- * Fetches the user's uploaded images from Firestore.
+ * Deletes a user image from Firebase Storage.
  */
-export async function getUserImages(userId: string): Promise<UserImage[]> {
-    try {
-        const q = query(
-            collection(db, "user_images"),
-            where("userId", "==", userId),
-            orderBy("createdAt", "desc")
-        );
-
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({
-            id: doc.id,
-            url: doc.data().url,
-            createdAt: doc.data().createdAt?.toDate() || new Date(),
-            path: doc.data().path,
-        }));
-    } catch (error) {
-        console.error("Error fetching user images:", error);
-        return [];
-    }
+export async function deleteUserImage(storagePath: string): Promise<void> {
+    const fileRef = ref(storage, storagePath);
+    await deleteObject(fileRef);
 }

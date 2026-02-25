@@ -72,9 +72,11 @@ export function Footer() {
                 {/* Bottom Bar */}
                 <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
                     <p>&copy; {new Date().getFullYear()} ElevePic. Todos os direitos reservados.</p>
-                    <div className="flex gap-6">
+                    <div className="flex flex-wrap gap-6">
                         <Link href="/privacy" className="hover:text-white transition-colors">Privacidade</Link>
                         <Link href="/terms" className="hover:text-white transition-colors">Termos</Link>
+                        <Link href="/refunds" className="hover:text-white transition-colors">Reembolsos</Link>
+                        <Link href="/contact" className="hover:text-white transition-colors">Contato</Link>
                         <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
                     </div>
                 </div>

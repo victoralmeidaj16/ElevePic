@@ -1,40 +1,71 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Github, LogIn, Loader2 } from "lucide-react"; // Added Loader2
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Github, LogIn, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const { signInWithGoogle } = useAuth();
+    const auth = getAuth(app);
+
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(prev => ({
+            ...prev,
+            [e.target.id]: e.target.value
+        }));
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null);
 
-        // TODO: Implement Email/Password login if needed, for now we will just simulate validation
-        // or prioritize Google Auth as per modern standards.
-        // For this demo, let's encourage Google Sign In as the primary "real" method.
+        if (!formData.email || !formData.password) {
+            setError("Please fill in all fields.");
+            setIsLoading(false);
+            return;
+        }
 
-        alert("Please use 'Continue with Google' for the real Firebase integration demo.");
-        setIsLoading(false);
+        try {
+            await signInWithEmailAndPassword(auth, formData.email, formData.password);
+            router.push("/dashboard");
+        } catch (err: any) {
+            console.error("Login failed", err);
+            if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
+                setError("Invalid email or password.");
+            } else {
+                setError("Login failed. Please try again.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleGoogleLogin = async () => {
         try {
             setIsLoading(true);
+            setError(null);
             await signInWithGoogle();
             router.push("/dashboard");
         } catch (error) {
-            console.error("Login failed", error);
-            alert("Login failed. Check console for details.");
+            console.error("Google Login failed", error);
+            setError("Failed to sign in with Google.");
         } finally {
             setIsLoading(false);
         }
@@ -54,9 +85,23 @@ export default function LoginPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <form onSubmit={handleLogin} className="space-y-4">
+                        {error && (
+                            <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4" />
+                                {error}
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="m@example.com" required />
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                required
+                                value={formData.email}
+                                onChange={handleChange}
+                                disabled={isLoading}
+                            />
                         </div>
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -68,9 +113,20 @@ export default function LoginPage() {
                                     Forgot password?
                                 </Link>
                             </div>
-                            <Input id="password" type="password" required />
+                            <Input
+                                id="password"
+                                type="password"
+                                required
+                                value={formData.password}
+                                onChange={handleChange}
+                                disabled={isLoading}
+                            />
                         </div>
-                        <Button disabled={isLoading} type="submit" className="w-full bg-primary hover:bg-primary/90 hover:shadow-lg">
+                        <Button
+                            disabled={isLoading}
+                            type="submit"
+                            className="w-full bg-primary hover:bg-primary/90 hover:shadow-lg"
+                        >
                             {isLoading ? (
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             ) : (
@@ -91,7 +147,13 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <Button variant="outline" type="button" className="w-full border-white/10 hover:bg-white/5" onClick={handleGoogleLogin} disabled={isLoading}>
+                    <Button
+                        variant="outline"
+                        type="button"
+                        className="w-full border-white/10 hover:bg-white/5"
+                        onClick={handleGoogleLogin}
+                        disabled={isLoading}
+                    >
                         <Github className="mr-2 h-4 w-4" /> Google
                     </Button>
                 </CardContent>

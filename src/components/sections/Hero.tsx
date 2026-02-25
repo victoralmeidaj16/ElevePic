@@ -1,60 +1,64 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { motion } from "framer-motion";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { Star, ArrowRight } from "lucide-react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 export function Hero() {
     return (
-        <section className="relative flex flex-col items-center justify-center min-h-[90vh] py-20 overflow-hidden text-center bg-background">
-            {/* Subtle Gradient Background - Strict Navy/Blue */}
-            <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-900/5 to-transparent pointer-events-none" />
+        <section className="relative py-32 bg-background overflow-hidden">
+            <BGPattern variant="grid" mask="fade-edges" />
+            <div className="container text-center px-4 md:px-6 relative z-10">
+                <div className="mx-auto flex max-w-screen-lg flex-col gap-6">
+                    <h1 className="text-3xl font-extrabold lg:text-6xl tracking-tight text-foreground">
+                        Sua imagem no nível <br className="hidden md:block" />
+                        <span className="text-primary">da sua carreira.</span>
+                    </h1>
+                    <p className="text-balance text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
+                        Pareça confiante. Sem parecer artificial. <br />
+                        Foto profissional. Sem estúdio.
+                    </p>
+                </div>
 
-            <div className="container px-4 md:px-6 relative z-10 flex flex-col items-center gap-8">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/10 border border-blue-500/20 text-sm font-semibold text-blue-400 mb-6">
-                        <span>Identidade Profissional Digital</span>
-                    </span>
-                </motion.div>
-
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white"
-                >
-                    Sua imagem no nível <br />
-                    <span className="text-blue-500">da sua carreira.</span>
-                </motion.h1>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-slate-300 text-lg md:text-xl max-w-2xl mb-8 leading-relaxed"
-                >
-                    Pareça confiante. Sem parecer artificial. <br />
-                    Foto profissional. Sem estúdio.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
-                >
-                    <Button size="xl" className="group bg-blue-600 hover:bg-blue-700 text-white rounded-2xl transition-all font-semibold px-8 py-6 text-lg shadow-lg shadow-blue-900/20">
+                <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <Button size="lg" className="rounded-full px-8 text-lg h-12">
                         Criar minha foto
-                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
-                    <Button size="xl" variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800 rounded-2xl px-8 py-6 text-lg">
+                    <Button size="lg" variant="outline" className="rounded-full px-8 text-lg h-12">
                         Ver Galeria
                     </Button>
-                </motion.div>
+                </div>
+
+                <div className="mx-auto mt-10 flex w-fit flex-col items-center gap-4 sm:flex-row">
+                    <span className="mx-4 inline-flex items-center -space-x-4">
+                        {[
+                            "https://www.shadcnblocks.com/images/block/avatar-1.webp",
+                            "https://www.shadcnblocks.com/images/block/avatar-2.webp",
+                            "https://www.shadcnblocks.com/images/block/avatar-3.webp",
+                            "https://www.shadcnblocks.com/images/block/avatar-4.webp",
+                            "https://www.shadcnblocks.com/images/block/avatar-5.webp",
+                        ].map((src, index) => (
+                            <Avatar key={index} className="size-14 border border-background">
+                                <AvatarImage src={src} alt={`Avatar ${index + 1}`} />
+                            </Avatar>
+                        ))}
+                    </span>
+                    <div>
+                        <div className="flex items-center gap-1 justify-center sm:justify-start">
+                            {[...Array(5)].map((_, index) => (
+                                <Star
+                                    key={index}
+                                    className="size-5 fill-yellow-400 text-yellow-400"
+                                />
+                            ))}
+                        </div>
+                        <p className="text-left font-medium text-muted-foreground">
+                            from 200+ reviews
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
     );

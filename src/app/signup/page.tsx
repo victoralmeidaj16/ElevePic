@@ -1,13 +1,89 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Github, Sparkles } from "lucide-react";
+import { Github, Sparkles, Loader2, AlertCircle } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 export default function SignupPage() {
+    const router = useRouter();
+    const { signInWithGoogle } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: ""
+    });
+
+    const auth = getAuth(app);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData(prev => ({
+            ...prev,
+            [e.target.id]: e.target.value
+        }));
+    };
+
+    const handleSignup = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+
+        if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
+            setError("Please fill in all fields.");
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                formData.email,
+                formData.password
+            );
+
+            await updateProfile(userCredential.user, {
+                displayName: `${formData.firstName} ${formData.lastName}`
+            });
+
+            router.push("/dashboard");
+        } catch (err: any) {
+            console.error(err);
+            if (err.code === "auth/email-already-in-use") {
+                setError("Email already registered.");
+            } else if (err.code === "auth/weak-password") {
+                setError("Password should be at least 6 characters.");
+            } else {
+                setError("Failed to create account. Please try again.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setIsLoading(true);
+            await signInWithGoogle();
+            router.push("/dashboard");
+        } catch (err) {
+            console.error(err);
+            setError("Failed to sign in with Google.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
             {/* Background Ambience */}
@@ -21,27 +97,69 @@ export default function SignupPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="first-name">First name</Label>
-                            <Input id="first-name" placeholder="Max" />
+                    <form onSubmit={handleSignup} className="space-y-4">
+                        {error && (
+                            <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4" />
+                                {error}
+                            </div>
+                        )}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="firstName">First name</Label>
+                                <Input
+                                    id="firstName"
+                                    placeholder="Max"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    disabled={isLoading}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="lastName">Last name</Label>
+                                <Input
+                                    id="lastName"
+                                    placeholder="Robinson"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    disabled={isLoading}
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="last-name">Last name</Label>
-                            <Input id="last-name" placeholder="Robinson" />
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                value={formData.email}
+                                onChange={handleChange}
+                                disabled={isLoading}
+                            />
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="m@example.com" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input id="password" type="password" />
-                    </div>
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-                        <Sparkles className="mr-2 h-4 w-4" /> Create Account
-                    </Button>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                disabled={isLoading}
+                            />
+                        </div>
+                        <Button
+                            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            ) : (
+                                <Sparkles className="mr-2 h-4 w-4" />
+                            )}
+                            Create Account
+                        </Button>
+                    </form>
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
@@ -54,7 +172,12 @@ export default function SignupPage() {
                         </div>
                     </div>
 
-                    <Button variant="outline" className="w-full border-white/10 hover:bg-white/5">
+                    <Button
+                        variant="outline"
+                        className="w-full border-white/10 hover:bg-white/5"
+                        onClick={handleGoogleSignIn}
+                        disabled={isLoading}
+                    >
                         <Github className="mr-2 h-4 w-4" /> Google
                     </Button>
                 </CardContent>
