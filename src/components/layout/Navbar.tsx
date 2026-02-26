@@ -28,7 +28,7 @@ export function Navbar() {
                             Entrar
                         </Button>
                     </Link>
-                    <Link href="/signup">
+                    <Link href="#pricing">
                         <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg px-6 font-medium shadow-lg shadow-blue-900/20 border border-blue-500/10">
                             Começar agora
                         </Button>

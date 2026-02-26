@@ -22,11 +22,20 @@ export function Hero() {
                 </div>
 
                 <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <Button size="lg" className="rounded-full px-8 text-lg h-12">
+                    <Button
+                        size="lg"
+                        className="rounded-full px-8 text-lg h-12"
+                        onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
                         Criar minha foto
                         <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
-                    <Button size="lg" variant="outline" className="rounded-full px-8 text-lg h-12">
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full px-8 text-lg h-12"
+                        onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
                         Ver Galeria
                     </Button>
                 </div>
