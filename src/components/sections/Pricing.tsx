@@ -10,7 +10,7 @@ const TIERS = [
     {
         id: "starter",
         name: "Inicial",
-        price: "R$ 29",
+        price: "R$ 90",
         description: "Perfeito para testar seus primeiros headshots profissionais.",
         features: [
             "40 Fotos Geradas por IA",
@@ -24,7 +24,7 @@ const TIERS = [
     {
         id: "pro",
         name: "Profissional",
-        price: "R$ 59",
+        price: "R$ 140",
         description: "A escolha mais popular para profissionais e criadores.",
         features: [
             "100 Fotos Geradas por IA",

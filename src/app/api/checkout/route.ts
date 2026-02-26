@@ -12,8 +12,8 @@ export async function POST(req: Request) {
         // but robustly we should validate it against allowed prices.
 
         const amounts: Record<string, number> = {
-            starter: 2990,
-            pro: 5990,
+            starter: 9000,
+            pro: 14000,
             business: 14990,
         };
 
