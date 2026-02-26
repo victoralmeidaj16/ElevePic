@@ -35,7 +35,7 @@ export async function POST(req: Request) {
                 },
             ],
             mode: "payment",
-            success_url: `${req.headers.get("origin")}/dashboard?success=true`,
+            success_url: `${req.headers.get("origin")}/signup?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.get("origin")}/?canceled=true`,
         });
 

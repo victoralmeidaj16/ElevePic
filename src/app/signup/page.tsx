@@ -11,6 +11,8 @@ import { Github, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { app } from "@/lib/firebase";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -26,6 +28,33 @@ export default function SignupPage() {
     });
 
     const auth = getAuth(app);
+    const searchParams = useSearchParams();
+    const sessionId = searchParams.get("session_id");
+
+    useEffect(() => {
+        if (sessionId) {
+            const fetchSession = async () => {
+                try {
+                    const res = await fetch(`/api/checkout/session?session_id=${sessionId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.email) {
+                            const names = data.name.split(" ");
+                            setFormData(prev => ({
+                                ...prev,
+                                email: data.email,
+                                firstName: names[0] || "",
+                                lastName: names.slice(1).join(" ") || ""
+                            }));
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching stripe session:", error);
+                }
+            };
+            fetchSession();
+        }
+    }, [sessionId]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
@@ -91,13 +120,21 @@ export default function SignupPage() {
 
             <Card className="w-full max-w-md border-white/10 bg-black/40 backdrop-blur-xl">
                 <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">Create an account</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center">Criar sua conta</CardTitle>
                     <CardDescription className="text-center">
-                        Enter your email below to create your account
+                        {sessionId
+                            ? "Pagamento confirmado! Escolha uma senha para acessar seus headshots."
+                            : "Entre com seus dados abaixo para criar sua conta"}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <form onSubmit={handleSignup} className="space-y-4">
+                        {sessionId && (
+                            <div className="p-3 rounded-md bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-center gap-2">
+                                <Sparkles className="w-4 h-4" />
+                                Plano ativado com sucesso! Complete os dados abaixo.
+                            </div>
+                        )}
                         {error && (
                             <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
                                 <AlertCircle className="w-4 h-4" />
