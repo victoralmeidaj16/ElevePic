@@ -11,6 +11,14 @@ export async function POST(req: Request) {
         // For this implementation, we allow dynamic priceId or fallback to a default if needed
         // but robustly we should validate it against allowed prices.
 
+        const amounts: Record<string, number> = {
+            starter: 2990,
+            pro: 5990,
+            business: 14990,
+        };
+
+        const unitAmount = amounts[priceId] || 2990;
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             line_items: [
@@ -18,10 +26,10 @@ export async function POST(req: Request) {
                     price_data: {
                         currency: "brl",
                         product_data: {
-                            name: "Pacote de Fotos Profissionais",
+                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Inicial' : priceId === 'pro' ? 'Profissional' : 'Empresarial'}`,
                             description: "Headshots gerados por IA com qualidade de estúdio",
                         },
-                        unit_amount: priceId === "pro" ? 4990 : 2990, // Example mapping: 49.90 or 29.90
+                        unit_amount: unitAmount,
                     },
                     quantity: 1,
                 },
