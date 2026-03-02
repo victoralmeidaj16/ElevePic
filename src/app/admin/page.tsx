@@ -122,8 +122,8 @@ export default function AdminPage() {
     };
 
     const handleSave = async () => {
-        if (!formData.title || !formData.prompt || !formData.image) {
-            setError("Título, imagem e prompt são obrigatórios.");
+        if (!formData.title || !formData.prompt) {
+            setError("Título e prompt são obrigatórios.");
             return;
         }
         setSaving(true);
@@ -313,7 +313,7 @@ export default function AdminPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="image">URL da Imagem ou Upload</Label>
+                                <Label htmlFor="image">URL da Imagem ou Upload (Opcional)</Label>
                                 <div className="flex gap-2">
                                     <Input
                                         id="image"
@@ -341,7 +341,7 @@ export default function AdminPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="tags">Tags (separadas por vírgula)</Label>
+                                <Label htmlFor="tags">Tags (separadas por vírgula) (Opcional)</Label>
                                 <Input id="tags" value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="Ex: Street Art, Fashion, Crown" />
                             </div>
 
