@@ -27,14 +27,21 @@ export default function DashboardPage() {
     useEffect(() => {
         if (user) {
             setLoading(true);
-            Promise.all([
-                getUserImages(user.uid),
-                getUserProfile(user.uid)
-            ]).then(([images, profile]) => {
-                setUserImages(images);
+
+            const fetchImages = getUserImages(user.uid).then(setUserImages).catch(err => {
+                console.error("Error fetching images:", err);
+            });
+
+            const fetchProfile = getUserProfile(user.uid).then(profile => {
                 setCredits(profile.credits);
-            }).catch(console.error)
-                .finally(() => setLoading(false));
+            }).catch(err => {
+                console.error("Error fetching profile:", err);
+                setError("Não foi possível carregar os créditos. Verifique as permissões do banco de dados.");
+            });
+
+            Promise.all([fetchImages, fetchProfile]).finally(() => {
+                setLoading(false);
+            });
         }
     }, [user]);
 
