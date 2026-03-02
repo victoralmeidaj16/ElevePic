@@ -34,7 +34,7 @@ export async function getStyles(): Promise<FirestoreStyle[]> {
 export async function addStyle(style: Omit<StyleOption, "id"> & { order?: number }): Promise<string> {
     const docRef = await addDoc(collection(db, STYLES_COLLECTION), {
         ...style,
-        id: crypto.randomUUID(),
+        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36),
         order: style.order ?? Date.now(),
     });
     return docRef.id;

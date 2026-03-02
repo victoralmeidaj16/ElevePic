@@ -129,18 +129,26 @@ export default function AdminPage() {
         setSaving(true);
         setError(null);
         const tags = tagsInput.split(",").map(t => t.trim()).filter(Boolean);
+        const withTimeout = <T,>(promise: Promise<T>, ms: number = 10000): Promise<T> => {
+            return Promise.race([
+                promise,
+                new Promise<T>((_, reject) => setTimeout(() => reject(new Error("Timeout: O servidor demorou muito para responder. Verifique sua conexão.")), ms))
+            ]);
+        };
+
         try {
             if (isAdding) {
-                await addStyle({ ...formData, tags });
+                await withTimeout(addStyle({ ...formData, tags }));
                 setSuccessMsg("Card adicionado com sucesso!");
             } else if (editingStyle) {
-                await updateStyle(editingStyle.firestoreId, { ...formData, tags });
+                await withTimeout(updateStyle(editingStyle.firestoreId, { ...formData, tags }));
                 setSuccessMsg("Card atualizado com sucesso!");
             }
             await loadStyles();
             closeForm();
-        } catch (e) {
-            setError("Erro ao salvar. Verifique as permissões do Firestore.");
+        } catch (e: any) {
+            console.error("Save error:", e);
+            setError(e?.message?.includes("Timeout") ? e.message : "Erro interno ao salvar o card. Tente novamente.");
         } finally {
             setSaving(false);
         }
