@@ -9,7 +9,7 @@ import { STYLES } from "@/lib/styles-data";
 import { useAuth } from "@/context/AuthContext";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { saveGeneration } from "@/lib/gallery-storage";
-import { getUserProfile, deductCredits } from "@/lib/user-profile";
+import { getUserProfile, deductCredits, UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
@@ -32,12 +32,22 @@ export default function DashboardPage() {
                 console.error("Error fetching images:", err);
             });
 
-            const fetchProfile = getUserProfile(user.uid).then(profile => {
-                setCredits(profile.credits);
-            }).catch(err => {
-                console.error("Error fetching profile:", err);
-                setError("Não foi possível carregar os créditos. Verifique as permissões do banco de dados.");
-            });
+            const isAdmin = user.email === "123indiozinhos@gmail.com";
+
+            let fetchProfile: Promise<void> | Promise<UserProfile>;
+
+            if (isAdmin) {
+                // Admin gets infinite credits locally, no need to touch Firestore for profile
+                setCredits(999999);
+                fetchProfile = Promise.resolve();
+            } else {
+                fetchProfile = getUserProfile(user.uid).then(profile => {
+                    setCredits(profile.credits);
+                }).catch(err => {
+                    console.error("Error fetching profile:", err);
+                    setError("Não foi possível carregar os créditos. Verifique as permissões do banco de dados.");
+                });
+            }
 
             Promise.all([fetchImages, fetchProfile]).finally(() => {
                 setLoading(false);
@@ -56,7 +66,9 @@ export default function DashboardPage() {
     const handleGenerate = async () => {
         if (selectedStyles.length === 0 || userImages.length < 3) return;
 
-        if (credits < selectedStyles.length) {
+        const isAdmin = user?.email === "123indiozinhos@gmail.com";
+
+        if (!isAdmin && credits < selectedStyles.length) {
             setError("Créditos insuficientes para gerar a quantidade de estilos selecionados.");
             return;
         }
@@ -106,9 +118,11 @@ export default function DashboardPage() {
                 promptUsed: s.promptUsed
             })));
 
-            // Deduct credits and update state
-            await deductCredits(user!.uid, data.images.length);
-            setCredits(prev => prev - data.images.length);
+            // Deduct credits and update state only if not admin
+            if (!isAdmin) {
+                await deductCredits(user!.uid, data.images.length);
+                setCredits(prev => prev - data.images.length);
+            }
 
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -183,7 +197,9 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
                         <Zap className="w-5 h-5 text-primary fill-primary" />
-                        <span className="font-bold text-white">{credits} Créditos</span>
+                        <span className="font-bold text-white">
+                            {user?.email === "123indiozinhos@gmail.com" ? "Admin" : `${credits} Créditos`}
+                        </span>
                     </div>
                 </div>
             </div>
