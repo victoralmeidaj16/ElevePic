@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
     LayoutDashboard,
@@ -9,9 +9,11 @@ import {
     PlusCircle,
     Settings,
     LogOut,
-    User
+    User,
+    ShieldAlert
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/context/AuthContext";
 
 const NAV_ITEMS = [
     {
@@ -38,6 +40,19 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, logout } = useAuth();
+
+    const isAdmin = user?.email === "123indiozinhos@gmail.com";
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            router.push("/");
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
 
     return (
         <aside className="w-64 h-screen bg-black/40 backdrop-blur-xl border-r border-white/10 flex flex-col fixed left-0 top-0 z-50">
@@ -73,6 +88,27 @@ export function Sidebar() {
                         </Link>
                     );
                 })}
+
+                {isAdmin && (
+                    <>
+                        <div className="mt-6 mb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Administrador
+                        </div>
+                        <Link href="/admin">
+                            <div
+                                className={cn(
+                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
+                                    pathname === "/admin"
+                                        ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                                        : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                                )}
+                            >
+                                <ShieldAlert className={cn("w-5 h-5", pathname === "/admin" ? "text-amber-500" : "text-muted-foreground group-hover:text-white")} />
+                                <span className="font-medium">Painel Admin</span>
+                            </div>
+                        </Link>
+                    </>
+                )}
             </nav>
 
             {/* User Profile */}
@@ -82,11 +118,19 @@ export function Sidebar() {
                         <User className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-white truncate">Victor Almeida</p>
-                        <p className="text-xs text-muted-foreground truncate">Free Plan</p>
+                        <p className="text-sm font-bold text-white truncate">
+                            {user?.displayName || user?.email?.split('@')[0] || "Usuário"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                            {isAdmin ? "Admin" : "Plano Ativo"}
+                        </p>
                     </div>
                 </div>
-                <Button variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-2">
+                <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-2"
+                >
                     <LogOut className="w-4 h-4" />
                     Sair
                 </Button>
