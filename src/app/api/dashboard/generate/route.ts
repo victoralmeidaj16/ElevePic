@@ -7,9 +7,9 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { styles, imageUrls } = body;
+        const { styles, imageUrls, allowNoImages } = body;
 
-        console.log("Generating with:", { styles, imageUrlsCount: imageUrls?.length });
+        console.log("Generating with:", { styles, imageUrlsCount: imageUrls?.length, allowNoImages });
 
         if (!styles || !Array.isArray(styles) || styles.length === 0) {
             return NextResponse.json(
@@ -18,30 +18,30 @@ export async function POST(req: Request) {
             );
         }
 
-        if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length < 3) {
+        if (!allowNoImages && (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length < 3)) {
             return NextResponse.json(
                 { error: "É necessário ter pelo menos 3 fotos de rosto para gerar." },
                 { status: 400 }
             );
         }
 
-        // 1. Fetch and convert user images to Base64
-        const imageBuffers = await Promise.all(
-            imageUrls.map(async (url: string) => {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`Failed to fetch image: ${url}`);
-                const arrayBuffer = await res.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                // Determine mime type (simple check or default to png/jpeg)
-                // For simplicity, assuming standard image formats.
-                // In production, use magic numbers or content-type header.
-                const contentType = res.headers.get("content-type") || "image/jpeg";
-                return {
-                    data: buffer.toString("base64"),
-                    mimeType: contentType
-                };
-            })
-        );
+        // 1. Fetch and convert user images to Base64 (Skip if no images provided)
+        let imageBuffers: { data: string; mimeType: string }[] = [];
+        if (imageUrls && Array.isArray(imageUrls) && imageUrls.length > 0) {
+            imageBuffers = await Promise.all(
+                imageUrls.map(async (url: string) => {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Failed to fetch image: ${url}`);
+                    const arrayBuffer = await res.arrayBuffer();
+                    const buffer = Buffer.from(arrayBuffer);
+                    const contentType = res.headers.get("content-type") || "image/jpeg";
+                    return {
+                        data: buffer.toString("base64"),
+                        mimeType: contentType
+                    };
+                })
+            );
+        }
 
         // 2. Generate for each style
         // We run these in parallel, but catch errors effectively
@@ -50,7 +50,13 @@ export async function POST(req: Request) {
             if (!style) return null;
 
             // Use the Nano Banana prompt directly, replacing [person] placeholder
-            const prompt = `Use the reference photos provided to identify the person. Generate a new image of THIS EXACT PERSON preserving their facial features, skin tone, hair, and likeness. Apply the following style:\n\n${style.prompt.replace(/\[person\]/g, "the person shown in the reference photos")}`;
+            let prompt = "";
+            if (imageBuffers.length > 0) {
+                prompt = `Use the reference photos provided to identify the person. Generate a new image of THIS EXACT PERSON preserving their facial features, skin tone, hair, and likeness. Apply the following style:\n\n${style.prompt.replace(/\[person\]/g, "the person shown in the reference photos")}`;
+            } else {
+                prompt = `Generate an image applying the following style:\n\n${style.prompt.replace(/\[person\]/g, "a mysterious and stylish person")}`;
+            }
+
             console.log(`\n--- PROMPT USED FOR [${styleId}] ---\n${prompt}\n--- END PROMPT ---\n`);
 
             try {

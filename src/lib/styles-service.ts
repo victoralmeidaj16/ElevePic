@@ -9,7 +9,8 @@ import {
     query,
     writeBatch,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "./firebase";
 import { STYLES, StyleOption } from "./styles-data";
 
 const STYLES_COLLECTION = "styles";
@@ -53,8 +54,22 @@ export async function deleteStyle(firestoreId: string): Promise<void> {
 export async function seedStyles(): Promise<void> {
     const batch = writeBatch(db);
     STYLES.forEach((style, index) => {
-        const ref = doc(collection(db, STYLES_COLLECTION));
-        batch.set(ref, { ...style, order: index });
+        const refDoc = doc(collection(db, STYLES_COLLECTION));
+        batch.set(refDoc, { ...style, order: index });
     });
     await batch.commit();
+}
+
+/**
+ * Uploads a card image to Firebase Storage under the 'cards' directory.
+ * Returns the public download URL.
+ */
+export async function uploadCardImage(file: File): Promise<string> {
+    const timestamp = Date.now();
+    const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+    const path = `cards/${timestamp}_${safeName}`;
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
 }
