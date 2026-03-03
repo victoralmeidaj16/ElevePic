@@ -7,26 +7,37 @@ if (!getApps().length) {
     const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
     const projectId = process.env.FIREBASE_PROJECT_ID || "elevepic";
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
     if (serviceAccountKey) {
-        // Option 1: Full JSON string
-        const serviceAccount = JSON.parse(serviceAccountKey);
-        adminApp = initializeApp({
-            credential: cert(serviceAccount),
-            projectId,
-        });
+        console.log("Initializing Firebase Admin with Service Account Key JSON...");
+        try {
+            const serviceAccount = JSON.parse(serviceAccountKey);
+            adminApp = initializeApp({
+                credential: cert(serviceAccount),
+                projectId,
+            });
+        } catch (e) {
+            console.error("Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY:", e);
+            throw e;
+        }
     } else if (clientEmail && privateKey) {
-        // Option 2: Individual variables (more robust for Render/Vercel)
+        console.log("Initializing Firebase Admin with individual credentials...");
+        // Ensure private key handles newlines correctly
+        const formattedKey = privateKey.includes("\\n")
+            ? privateKey.replace(/\\n/g, '\n')
+            : privateKey;
+
         adminApp = initializeApp({
             credential: cert({
                 projectId,
                 clientEmail,
-                privateKey,
+                privateKey: formattedKey,
             }),
             projectId,
         });
     } else {
+        console.warn("Firebase Admin: Missing credentials (FIREBASE_SERVICE_ACCOUNT_KEY or FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY). Falling back to default credentials...");
         // Fallback: Default initialization (works with ADC or in Google Cloud)
         adminApp = initializeApp({
             projectId,

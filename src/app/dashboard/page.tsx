@@ -206,13 +206,13 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-4">
                     {user?.email === "123indiozinhos@gmail.com" && (
                         <div className="flex gap-2">
-                            <Link href="/admin">
+                            <Link href="/dashboard/admin">
                                 <Button variant="outline" className="border-white/10 hover:bg-white/5 gap-2">
                                     <Database className="w-4 h-4" />
                                     Painel Admin
                                 </Button>
                             </Link>
-                            <Link href="/admin?action=add">
+                            <Link href="/dashboard/admin?action=add">
                                 <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
                                     <Plus className="w-4 h-4" />
                                     Adicionar Card

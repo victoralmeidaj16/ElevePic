@@ -94,16 +94,16 @@ export function Sidebar() {
                         <div className="mt-6 mb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             Administrador
                         </div>
-                        <Link href="/admin">
+                        <Link href="/dashboard/admin">
                             <div
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
-                                    pathname === "/admin"
+                                    pathname === "/dashboard/admin"
                                         ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
                                         : "text-muted-foreground hover:bg-white/5 hover:text-white"
                                 )}
                             >
-                                <ShieldAlert className={cn("w-5 h-5", pathname === "/admin" ? "text-amber-500" : "text-muted-foreground group-hover:text-white")} />
+                                <ShieldAlert className={cn("w-5 h-5", pathname === "/dashboard/admin" ? "text-amber-500" : "text-muted-foreground group-hover:text-white")} />
                                 <span className="font-medium">Painel Admin</span>
                             </div>
                         </Link>
