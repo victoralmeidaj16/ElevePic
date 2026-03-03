@@ -52,7 +52,10 @@ function AdminContent() {
         try {
             const res = await fetch("/api/admin/styles");
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Erro ao carregar");
+            if (!res.ok) {
+                const debugInfo = data.code ? ` (Code: ${data.code})` : "";
+                throw new Error(data.error + debugInfo || "Erro ao carregar");
+            }
             setStyles(data.styles);
         } catch (e: any) {
             console.error(e);

@@ -19,7 +19,11 @@ export async function GET() {
     } catch (error: any) {
         console.error("GET /api/admin/styles error:", error);
         return NextResponse.json(
-            { error: error.message || "Failed to fetch styles" },
+            {
+                error: error.message || "Failed to fetch styles",
+                code: error.code,
+                details: error.details
+            },
             { status: 500 }
         );
     }
@@ -54,7 +58,10 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("POST /api/admin/styles error:", error);
         return NextResponse.json(
-            { error: error.message || "Failed to add style" },
+            {
+                error: error.message || "Failed to add style",
+                code: error.code
+            },
             { status: 500 }
         );
     }
