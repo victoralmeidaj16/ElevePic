@@ -1,26 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-    collection,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    orderBy,
-    query,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase-admin";
 
 const STYLES_COLLECTION = "styles";
 
-// GET /api/admin/styles — list all styles
+// GET /api/admin/styles — list all styles using Admin SDK
 export async function GET() {
     try {
-        const q = query(
-            collection(db, STYLES_COLLECTION),
-            orderBy("order", "asc")
-        );
-        const snapshot = await getDocs(q);
+        const snapshot = await adminDb.collection(STYLES_COLLECTION)
+            .orderBy("order", "asc")
+            .get();
 
         const styles = snapshot.docs.map((docSnap) => ({
             firestoreId: docSnap.id,
@@ -37,7 +25,7 @@ export async function GET() {
     }
 }
 
-// POST /api/admin/styles — add a new style
+// POST /api/admin/styles — add a new style using Admin SDK
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -50,13 +38,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const id =
-            typeof crypto !== "undefined" && crypto.randomUUID
-                ? crypto.randomUUID()
-                : Math.random().toString(36).substring(2) +
-                Date.now().toString(36);
+        const id = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
-        const docRef = await addDoc(collection(db, STYLES_COLLECTION), {
+        const docRef = await adminDb.collection(STYLES_COLLECTION).add({
             id,
             title,
             category: category || "editorial",
@@ -76,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-// PUT /api/admin/styles — update an existing style
+// PUT /api/admin/styles — update an existing style using Admin SDK
 export async function PUT(req: NextRequest) {
     try {
         const body = await req.json();
@@ -89,7 +73,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        await updateDoc(doc(db, STYLES_COLLECTION, firestoreId), data);
+        await adminDb.collection(STYLES_COLLECTION).doc(firestoreId).update(data);
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
@@ -101,7 +85,7 @@ export async function PUT(req: NextRequest) {
     }
 }
 
-// DELETE /api/admin/styles — delete a style
+// DELETE /api/admin/styles — delete a style using Admin SDK
 export async function DELETE(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
@@ -114,7 +98,7 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        await deleteDoc(doc(db, STYLES_COLLECTION, firestoreId));
+        await adminDb.collection(STYLES_COLLECTION).doc(firestoreId).delete();
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

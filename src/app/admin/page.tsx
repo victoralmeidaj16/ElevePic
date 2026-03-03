@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, ShieldAlert, Sparkles, Image as ImageIcon, Download } from "lucide-react";
-import { FirestoreStyle, uploadCardImage, addStyle, updateStyle, deleteStyle } from "@/lib/styles-service";
+import { FirestoreStyle } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
 
@@ -20,8 +21,10 @@ const EMPTY_FORM: Omit<StyleOption, "id"> = {
     tags: [],
 };
 
-export default function AdminPage() {
+function AdminContent() {
     const { user } = useAuth();
+    const searchParams = useSearchParams();
+    const action = searchParams.get("action");
     const [styles, setStyles] = useState<FirestoreStyle[]>([]);
     const [loading, setLoading] = useState(true);
     const [seeding, setSeeding] = useState(false);
@@ -31,7 +34,6 @@ export default function AdminPage() {
     const [formData, setFormData] = useState<Omit<StyleOption, "id">>(EMPTY_FORM);
     const [tagsInput, setTagsInput] = useState("");
     const [saving, setSaving] = useState(false);
-    const [uploadingImage, setUploadingImage] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -63,6 +65,12 @@ export default function AdminPage() {
     useEffect(() => {
         if (isAdmin) loadStyles();
     }, [isAdmin]);
+
+    useEffect(() => {
+        if (isAdmin && action === "add") {
+            openAdd();
+        }
+    }, [isAdmin, action]);
 
     const handleSeed = async () => {
         setSeeding(true);
@@ -107,24 +115,6 @@ export default function AdminPage() {
         setIsAdding(false);
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setUploadingImage(true);
-        setError(null);
-        try {
-            const url = await uploadCardImage(file);
-            setFormData(p => ({ ...p, image: url }));
-            setSuccessMsg("Imagem convertida em URL com sucesso!");
-        } catch (err) {
-            console.error("Upload error", err);
-            setError("Erro ao fazer upload da imagem para o Storage.");
-        } finally {
-            setUploadingImage(false);
-        }
-    };
-
     const handleSave = async () => {
         if (!formData.title || !formData.prompt) {
             setError("Título e prompt são obrigatórios.");
@@ -144,24 +134,20 @@ export default function AdminPage() {
                 tags: tagsArray
             };
 
-            const timeoutPromise = new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error("Timeout ao conectar com o banco. Verifique sua conexão e Regras de Segurança (Rules) do Firestore.")), 15000)
-            );
+            const endpoint = "/api/admin/styles";
+            const method = isAdding ? "POST" : "PUT";
+            const payload = isAdding ? styleData : { firestoreId: editingStyle?.firestoreId, ...styleData };
 
-            if (isAdding) {
-                await Promise.race([
-                    addStyle(styleData as any),
-                    timeoutPromise
-                ]);
-                setSuccessMsg("Card adicionado com sucesso!");
-            } else if (editingStyle) {
-                await Promise.race([
-                    updateStyle(editingStyle.firestoreId, styleData),
-                    timeoutPromise
-                ]);
-                setSuccessMsg("Card atualizado com sucesso!");
-            }
+            const res = await fetch(endpoint, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erro ao salvar o card.");
+
+            setSuccessMsg(isAdding ? "Card adicionado com sucesso!" : "Card atualizado com sucesso!");
             await loadStyles();
             closeForm();
         } catch (e: any) {
@@ -176,13 +162,10 @@ export default function AdminPage() {
         if (!confirm("Tem certeza que deseja excluir este card?")) return;
         setDeletingId(firestoreId);
         try {
-            const timeoutPromise = new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error("Timeout ao conectar com o banco.")), 15000)
-            );
-            await Promise.race([
-                deleteStyle(firestoreId),
-                timeoutPromise
-            ]);
+            const res = await fetch(`/api/admin/styles?id=${firestoreId}`, { method: "DELETE" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erro ao excluir.");
+
             setSuccessMsg("Card excluído.");
             await loadStyles();
         } catch (e: any) {
@@ -344,8 +327,6 @@ export default function AdminPage() {
                                     </select>
                                 </div>
                             </div>
-
-
 
                             <div className="space-y-2">
                                 <Label htmlFor="tags">Tags (separadas por vírgula) (Opcional)</Label>
@@ -509,5 +490,13 @@ export default function AdminPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function AdminPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-10 h-10 animate-spin text-primary" /></div>}>
+            <AdminContent />
+        </Suspense>
     );
 }
