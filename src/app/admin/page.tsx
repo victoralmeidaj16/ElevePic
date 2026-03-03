@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, ShieldAlert, Sparkles, Image as ImageIcon, Download } from "lucide-react";
-import { FirestoreStyle, uploadCardImage } from "@/lib/styles-service";
+import { FirestoreStyle, uploadCardImage, addStyle, updateStyle, deleteStyle } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
 
@@ -130,30 +130,38 @@ export default function AdminPage() {
             setError("Título e prompt são obrigatórios.");
             return;
         }
+
         setSaving(true);
         setError(null);
-        const tags = tagsInput.split(",").map(t => t.trim()).filter(Boolean);
 
         try {
+            const tagsArray = tagsInput ? tagsInput.split(",").map(t => t.trim()).filter(Boolean) : [];
+            const styleData = {
+                title: formData.title,
+                category: formData.category,
+                image: formData.image || "",
+                prompt: formData.prompt,
+                tags: tagsArray
+            };
+
+            const timeoutPromise = new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error("Timeout ao conectar com o banco. Verifique sua conexão e Regras de Segurança (Rules) do Firestore.")), 15000)
+            );
+
             if (isAdding) {
-                const res = await fetch("/api/admin/styles", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...formData, tags }),
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Erro ao adicionar");
+                await Promise.race([
+                    addStyle(styleData as any),
+                    timeoutPromise
+                ]);
                 setSuccessMsg("Card adicionado com sucesso!");
             } else if (editingStyle) {
-                const res = await fetch("/api/admin/styles", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ firestoreId: editingStyle.firestoreId, ...formData, tags }),
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Erro ao atualizar");
+                await Promise.race([
+                    updateStyle(editingStyle.firestoreId, styleData),
+                    timeoutPromise
+                ]);
                 setSuccessMsg("Card atualizado com sucesso!");
             }
+
             await loadStyles();
             closeForm();
         } catch (e: any) {
@@ -168,12 +176,17 @@ export default function AdminPage() {
         if (!confirm("Tem certeza que deseja excluir este card?")) return;
         setDeletingId(firestoreId);
         try {
-            const res = await fetch(`/api/admin/styles?id=${firestoreId}`, { method: "DELETE" });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Erro ao excluir");
+            const timeoutPromise = new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error("Timeout ao conectar com o banco.")), 15000)
+            );
+            await Promise.race([
+                deleteStyle(firestoreId),
+                timeoutPromise
+            ]);
             setSuccessMsg("Card excluído.");
             await loadStyles();
         } catch (e: any) {
+            console.error("Delete error:", e);
             setError(e?.message || "Erro ao excluir.");
         } finally {
             setDeletingId(null);
