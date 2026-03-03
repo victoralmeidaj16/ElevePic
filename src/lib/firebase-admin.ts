@@ -7,7 +7,7 @@ if (!getApps().length) {
     const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
     const projectId = process.env.FIREBASE_PROJECT_ID || "elevepic";
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY || process.env.private_key;
 
     if (serviceAccountKey) {
         console.log("Initializing Firebase Admin with Service Account Key JSON...");
