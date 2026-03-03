@@ -39,6 +39,7 @@ if (!getApps().length) {
                     privateKey,
                 }),
                 projectId,
+                storageBucket: "elevepic.firebasestorage.app",
             });
             console.log(`[Firebase Admin] SUCCESS: Initialized with ${clientEmail}`);
         } catch (e) {
@@ -56,4 +57,11 @@ if (!getApps().length) {
 }
 
 export const adminDb = getFirestore(adminApp);
-adminDb.settings({ databaseId: "database" });
+try {
+    adminDb.settings({ databaseId: "database" });
+} catch (error: any) {
+    // Ignore error if settings are already applied during Next.js hot-reload
+    if (!error.message.includes('already been initialized')) {
+        console.error("Firestore settings error:", error);
+    }
+}
