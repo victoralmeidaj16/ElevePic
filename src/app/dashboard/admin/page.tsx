@@ -10,8 +10,7 @@ import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, Shiel
 import { FirestoreStyle } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
-
-const ADMIN_EMAIL = "123indiozinhos@gmail.com";
+import { ADMIN_EMAIL } from "@/lib/constants";
 
 const EMPTY_FORM: Omit<StyleOption, "id"> = {
     title: "",

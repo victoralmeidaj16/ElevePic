@@ -11,6 +11,7 @@ import { getUserImages, UserImage } from "@/lib/user-storage";
 import { saveGeneration } from "@/lib/gallery-storage";
 import { getUserProfile, deductCredits, UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
+import { ADMIN_EMAIL } from "@/lib/constants";
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -33,7 +34,7 @@ export default function DashboardPage() {
                 console.error("Error fetching images:", err);
             });
 
-            const isAdmin = user.email === "123indiozinhos@gmail.com";
+            const isAdmin = user.email === ADMIN_EMAIL;
 
             let fetchProfile: Promise<void> | Promise<UserProfile>;
 

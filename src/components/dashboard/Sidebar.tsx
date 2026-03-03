@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
+import { ADMIN_EMAIL } from "@/lib/constants";
 
 const NAV_ITEMS = [
     {
@@ -43,7 +44,7 @@ export function Sidebar() {
     const router = useRouter();
     const { user, logout } = useAuth();
 
-    const isAdmin = user?.email === "123indiozinhos@gmail.com";
+    const isAdmin = user?.email === ADMIN_EMAIL;
 
     const handleLogout = async () => {
         try {

@@ -45,11 +45,17 @@ async function uploadBase64Image(base64Str: string, styleId: string): Promise<st
 
     const file = bucket.file(filename);
     await file.save(buffer, {
-        metadata: { contentType: mimeType },
+        metadata: {
+            contentType: mimeType,
+            cacheControl: 'public, max-age=31536000',
+        },
     });
 
-    // Construct the Firebase Storage download URL manually
-    return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(filename)}?alt=media`;
+    // Make the file publicly accessible so anyone can view the card cover
+    await file.makePublic();
+
+    // Construct the standard public download URL
+    return `https://storage.googleapis.com/${bucket.name}/${filename}`;
 }
 
 // POST /api/admin/styles — add a new style using Admin SDK
