@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { collection, doc, writeBatch } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { STYLES } from "@/lib/styles-data";
 
 const STYLES_COLLECTION = "styles";
@@ -7,10 +8,10 @@ const STYLES_COLLECTION = "styles";
 // POST /api/admin/styles/seed — seed all default styles
 export async function POST() {
     try {
-        const batch = adminDb.batch();
+        const batch = writeBatch(db);
 
         STYLES.forEach((style, index) => {
-            const docRef = adminDb.collection(STYLES_COLLECTION).doc();
+            const docRef = doc(collection(db, STYLES_COLLECTION));
             batch.set(docRef, { ...style, order: index });
         });
 

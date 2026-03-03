@@ -1,20 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import {
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    orderBy,
+    query,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const STYLES_COLLECTION = "styles";
-const ADMIN_EMAIL = "123indiozinhos@gmail.com";
 
 // GET /api/admin/styles — list all styles
 export async function GET() {
     try {
-        const snapshot = await adminDb
-            .collection(STYLES_COLLECTION)
-            .orderBy("order", "asc")
-            .get();
+        const q = query(
+            collection(db, STYLES_COLLECTION),
+            orderBy("order", "asc")
+        );
+        const snapshot = await getDocs(q);
 
-        const styles = snapshot.docs.map((doc) => ({
-            firestoreId: doc.id,
-            ...doc.data(),
+        const styles = snapshot.docs.map((docSnap) => ({
+            firestoreId: docSnap.id,
+            ...docSnap.data(),
         }));
 
         return NextResponse.json({ styles });
@@ -43,9 +53,10 @@ export async function POST(req: NextRequest) {
         const id =
             typeof crypto !== "undefined" && crypto.randomUUID
                 ? crypto.randomUUID()
-                : Math.random().toString(36).substring(2) + Date.now().toString(36);
+                : Math.random().toString(36).substring(2) +
+                Date.now().toString(36);
 
-        const docRef = await adminDb.collection(STYLES_COLLECTION).add({
+        const docRef = await addDoc(collection(db, STYLES_COLLECTION), {
             id,
             title,
             category: category || "editorial",
@@ -78,10 +89,7 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        await adminDb
-            .collection(STYLES_COLLECTION)
-            .doc(firestoreId)
-            .update(data);
+        await updateDoc(doc(db, STYLES_COLLECTION, firestoreId), data);
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
@@ -106,10 +114,7 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        await adminDb
-            .collection(STYLES_COLLECTION)
-            .doc(firestoreId)
-            .delete();
+        await deleteDoc(doc(db, STYLES_COLLECTION, firestoreId));
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
