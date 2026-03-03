@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { STYLES } from "@/lib/styles-data";
 import { generateHeadshots } from "@/lib/gemini";
-import { db } from "@/lib/firebase";
-import { collection, query, where, getDocs, limit } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -53,8 +52,7 @@ export async function POST(req: Request) {
             // Fallback to Firestore if it's a dynamic admin card
             if (!style) {
                 try {
-                    const q = query(collection(db, "styles"), where("id", "==", styleId), limit(1));
-                    const querySnapshot = await getDocs(q);
+                    const querySnapshot = await adminDb.collection("styles").where("id", "==", styleId).limit(1).get();
                     if (!querySnapshot.empty) {
                         style = querySnapshot.docs[0].data();
                     }

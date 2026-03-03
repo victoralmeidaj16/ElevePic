@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-    collection,
-    getDocs,
-    orderBy,
-    query,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase-admin";
 
 const STYLES_COLLECTION = "styles";
 
@@ -13,11 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
     try {
-        const q = query(
-            collection(db, STYLES_COLLECTION),
-            orderBy("order", "asc")
-        );
-        const snapshot = await getDocs(q);
+        const snapshot = await adminDb.collection(STYLES_COLLECTION)
+            .orderBy("order", "asc")
+            .get();
 
         const styles = snapshot.docs.map((docSnap) => ({
             firestoreId: docSnap.id,
