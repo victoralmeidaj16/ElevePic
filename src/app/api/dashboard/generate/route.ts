@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { STYLES } from "@/lib/styles-data";
 import { generateHeadshots } from "@/lib/gemini";
+import { adminDb } from "@/lib/firebase-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +47,24 @@ export async function POST(req: Request) {
         // 2. Generate for each style
         // We run these in parallel, but catch errors effectively
         const resultsPromises = styles.map(async (styleId: string) => {
-            const style = STYLES.find(s => s.id === styleId);
-            if (!style) return null;
+            let style = STYLES.find(s => s.id === styleId) as any;
+
+            // Fallback to Firestore if it's a dynamic admin card
+            if (!style) {
+                try {
+                    const docSnap = await adminDb.collection("styles").where("id", "==", styleId).limit(1).get();
+                    if (!docSnap.empty) {
+                        style = docSnap.docs[0].data();
+                    }
+                } catch (e) {
+                    console.error("Erro ao buscar estilo no firestore:", e);
+                }
+            }
+
+            if (!style) {
+                console.warn(`Estilo ${styleId} não encontrado.`);
+                return null;
+            }
 
             // Use the Nano Banana prompt directly, replacing [person] placeholder
             let prompt = "";
