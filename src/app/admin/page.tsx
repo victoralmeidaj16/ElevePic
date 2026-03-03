@@ -345,33 +345,7 @@ export default function AdminPage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="image">URL da Imagem ou Upload (Opcional)</Label>
-                                <div className="flex gap-2">
-                                    <Input
-                                        id="image"
-                                        value={formData.image}
-                                        onChange={e => setFormData(p => ({ ...p, image: e.target.value }))}
-                                        placeholder="https://images.unsplash.com/..."
-                                        className="flex-1"
-                                    />
-                                    <div className="relative">
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={handleImageUpload}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                            disabled={uploadingImage}
-                                        />
-                                        <Button type="button" variant="outline" className="border-white/10" disabled={uploadingImage}>
-                                            {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : "Upload"}
-                                        </Button>
-                                    </div>
-                                </div>
-                                {formData.image && (
-                                    <img src={formData.image} alt="Preview" className="w-24 h-32 object-cover rounded-lg border border-white/10 mt-2" />
-                                )}
-                            </div>
+
 
                             <div className="space-y-2">
                                 <Label htmlFor="tags">Tags (separadas por vírgula) (Opcional)</Label>

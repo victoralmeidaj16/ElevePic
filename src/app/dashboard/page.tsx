@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { Zap, Loader2, Download, AlertCircle, CheckCircle2, Image as ImageIcon, Plus } from "lucide-react";
+import { Zap, Loader2, Download, AlertCircle, CheckCircle2, Image as ImageIcon, Plus, Database } from "lucide-react";
 import { StyleSelector } from "@/components/dashboard/StyleSelector";
 import { STYLES } from "@/lib/styles-data";
 import { useAuth } from "@/context/AuthContext";
@@ -204,6 +204,14 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
+                    {user?.email === "123indiozinhos@gmail.com" && (
+                        <Link href="/admin">
+                            <Button variant="outline" className="border-white/10 hover:bg-white/5 gap-2">
+                                <Database className="w-4 h-4" />
+                                Painel Admin
+                            </Button>
+                        </Link>
+                    )}
                     <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
                         <Zap className="w-5 h-5 text-primary fill-primary" />
                         <span className="font-bold text-white">
