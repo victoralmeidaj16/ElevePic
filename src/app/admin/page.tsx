@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, ShieldAlert, Sparkles, Image as ImageIcon, Download } from "lucide-react";
-import { FirestoreStyle, getStyles, addStyle, updateStyle, deleteStyle, seedStyles, uploadCardImage } from "@/lib/styles-service";
+import { FirestoreStyle, uploadCardImage } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
 
@@ -48,11 +48,13 @@ export default function AdminPage() {
     const loadStyles = async () => {
         setLoading(true);
         try {
-            const data = await getStyles();
-            setStyles(data);
-        } catch (e) {
+            const res = await fetch("/api/admin/styles");
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erro ao carregar");
+            setStyles(data.styles);
+        } catch (e: any) {
             console.error(e);
-            setError("Erro ao carregar estilos do Firestore.");
+            setError(e?.message || "Erro ao carregar estilos.");
         } finally {
             setLoading(false);
         }
@@ -65,12 +67,14 @@ export default function AdminPage() {
     const handleSeed = async () => {
         setSeeding(true);
         try {
-            await seedStyles();
+            const res = await fetch("/api/admin/styles/seed", { method: "POST" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erro ao fazer seed");
             setSeedDone(true);
             setSuccessMsg("Cards padrão migrados para o Firestore com sucesso!");
             await loadStyles();
-        } catch (e) {
-            setError("Erro ao fazer seed.");
+        } catch (e: any) {
+            setError(e?.message || "Erro ao fazer seed.");
         } finally {
             setSeeding(false);
         }
@@ -129,26 +133,32 @@ export default function AdminPage() {
         setSaving(true);
         setError(null);
         const tags = tagsInput.split(",").map(t => t.trim()).filter(Boolean);
-        const withTimeout = <T,>(promise: Promise<T>, ms: number = 10000): Promise<T> => {
-            return Promise.race([
-                promise,
-                new Promise<T>((_, reject) => setTimeout(() => reject(new Error("Timeout: O servidor demorou muito para responder. Verifique sua conexão.")), ms))
-            ]);
-        };
 
         try {
             if (isAdding) {
-                await withTimeout(addStyle({ ...formData, tags }));
+                const res = await fetch("/api/admin/styles", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...formData, tags }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Erro ao adicionar");
                 setSuccessMsg("Card adicionado com sucesso!");
             } else if (editingStyle) {
-                await withTimeout(updateStyle(editingStyle.firestoreId, { ...formData, tags }));
+                const res = await fetch("/api/admin/styles", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ firestoreId: editingStyle.firestoreId, ...formData, tags }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || "Erro ao atualizar");
                 setSuccessMsg("Card atualizado com sucesso!");
             }
             await loadStyles();
             closeForm();
         } catch (e: any) {
             console.error("Save error:", e);
-            setError(e?.message?.includes("Timeout") ? e.message : "Erro interno ao salvar o card. Tente novamente.");
+            setError(e?.message || "Erro ao salvar o card. Tente novamente.");
         } finally {
             setSaving(false);
         }
@@ -158,11 +168,13 @@ export default function AdminPage() {
         if (!confirm("Tem certeza que deseja excluir este card?")) return;
         setDeletingId(firestoreId);
         try {
-            await deleteStyle(firestoreId);
+            const res = await fetch(`/api/admin/styles?id=${firestoreId}`, { method: "DELETE" });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Erro ao excluir");
             setSuccessMsg("Card excluído.");
             await loadStyles();
-        } catch (e) {
-            setError("Erro ao excluir.");
+        } catch (e: any) {
+            setError(e?.message || "Erro ao excluir.");
         } finally {
             setDeletingId(null);
         }
