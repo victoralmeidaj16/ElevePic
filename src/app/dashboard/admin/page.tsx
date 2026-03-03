@@ -18,7 +18,6 @@ const EMPTY_FORM: Omit<StyleOption, "id"> = {
     category: "editorial",
     image: "",
     prompt: "",
-    tags: [],
 };
 
 function AdminContent() {
@@ -32,7 +31,6 @@ function AdminContent() {
     const [editingStyle, setEditingStyle] = useState<FirestoreStyle | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [formData, setFormData] = useState<Omit<StyleOption, "id">>(EMPTY_FORM);
-    const [tagsInput, setTagsInput] = useState("");
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -93,7 +91,6 @@ function AdminContent() {
 
     const openAdd = () => {
         setFormData(EMPTY_FORM);
-        setTagsInput("");
         setEditingStyle(null);
         setIsAdding(true);
         setError(null);
@@ -105,9 +102,7 @@ function AdminContent() {
             category: style.category,
             image: style.image,
             prompt: style.prompt,
-            tags: style.tags ?? [],
         });
-        setTagsInput((style.tags ?? []).join(", "));
         setEditingStyle(style);
         setIsAdding(false);
         setError(null);
@@ -128,13 +123,11 @@ function AdminContent() {
         setError(null);
 
         try {
-            const tagsArray = tagsInput ? tagsInput.split(",").map(t => t.trim()).filter(Boolean) : [];
             const styleData = {
                 title: formData.title,
                 category: formData.category,
                 image: formData.image || "",
                 prompt: formData.prompt,
-                tags: tagsArray
             };
 
             const endpoint = "/api/admin/styles";
@@ -196,7 +189,7 @@ function AdminContent() {
         }
     };
 
-    const handleConfirmTest = async () => {
+    const handleConfirmTest = async (asCover: boolean = false) => {
         if (!testingStyle) return;
 
         if (includePhotos && userImages.length < 3) {
@@ -210,7 +203,7 @@ function AdminContent() {
 
         try {
             const bodyPayload = {
-                styles: [testingStyle.id], // Use the logical generic ID
+                styles: [testingStyle.id],
                 imageUrls: includePhotos ? userImages.map(img => img.url) : [],
                 allowNoImages: !includePhotos
             };
@@ -226,9 +219,29 @@ function AdminContent() {
             if (!response.ok) throw new Error(data.error || "Falha na geração");
 
             if (data.images && data.images.length > 0) {
-                // The API returns { styleId, url (base64 data url), promptUsed }
-                setTestResult(data.images[0].url);
-                setSuccessMsg("Card gerado com sucesso (resolução base64)!");
+                const imageUrl = data.images[0].url;
+                setTestResult(imageUrl);
+
+                if (asCover) {
+                    // Update the style in Firestore with this new image
+                    const updateRes = await fetch("/api/admin/styles", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            firestoreId: testingStyle.firestoreId,
+                            image: imageUrl
+                        }),
+                    });
+
+                    if (updateRes.ok) {
+                        setSuccessMsg("Capa do card atualizada com sucesso!");
+                        loadStyles(); // Refresh the list
+                    } else {
+                        throw new Error("Imagem gerada, mas falha ao salvar como capa.");
+                    }
+                } else {
+                    setSuccessMsg("Teste gerado com sucesso!");
+                }
             }
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -266,15 +279,6 @@ function AdminContent() {
                         <p className="text-slate-400 mt-1">Gerencie os cards disponíveis para os usuários</p>
                     </div>
                     <div className="flex gap-3">
-                        <Button
-                            variant="outline"
-                            onClick={handleSeed}
-                            disabled={seeding || seedDone || styles.length > 0}
-                            className="border-white/10 hover:bg-white/5 gap-2"
-                        >
-                            {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
-                            {seedDone ? "Seed Concluído" : "Seed Padrão"}
-                        </Button>
                         <Button onClick={openAdd} className="bg-blue-600 hover:bg-blue-700 gap-2">
                             <Plus className="w-4 h-4" />
                             Adicionar Card
@@ -332,11 +336,6 @@ function AdminContent() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="tags">Tags (separadas por vírgula) (Opcional)</Label>
-                                <Input id="tags" value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="Ex: Street Art, Fashion, Crown" />
-                            </div>
-
-                            <div className="space-y-2">
                                 <Label htmlFor="prompt">Prompt da IA</Label>
                                 <textarea
                                     id="prompt"
@@ -370,10 +369,10 @@ function AdminContent() {
                             {!testResult ? (
                                 <>
                                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                        <Sparkles className="w-5 h-5 text-blue-400" /> Testar Geração
+                                        <ImageIcon className="w-5 h-5 text-blue-400" /> Gerar Capa do Card
                                     </h2>
                                     <p className="text-slate-400 text-sm">
-                                        Testando o card: <strong className="text-white">{testingStyle.title}</strong>
+                                        Card: <strong className="text-white">{testingStyle.title}</strong>
                                     </p>
 
                                     <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 mt-4">
@@ -385,16 +384,16 @@ function AdminContent() {
                                                 className="mt-1 w-4 h-4 rounded border-white/20 bg-black/50 text-blue-500 focus:ring-blue-500"
                                             />
                                             <div className="space-y-1">
-                                                <p className="text-sm font-medium text-white">Incluir minhas fotos como input</p>
+                                                <p className="text-sm font-medium text-white">Usar minhas fotos (Admin)</p>
                                                 <p className="text-xs text-slate-400">
-                                                    Use as suas fotos de referência para ver como o card fica com o seu rosto. (Requer 3 fotos no dashboard).
+                                                    Se marcado, usará sua face. Se desmarcado, gerará apenas pelo prompt.
                                                 </p>
                                             </div>
                                         </label>
                                     </div>
 
                                     <Button
-                                        onClick={handleConfirmTest}
+                                        onClick={() => handleConfirmTest(true)}
                                         disabled={generating || (includePhotos && userImages.length < 3)}
                                         className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20"
                                     >
@@ -402,25 +401,19 @@ function AdminContent() {
                                             <>
                                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Gerando...
                                             </>
-                                        ) : "Gerar Imagem de Teste"}
+                                        ) : "Gerar e Salvar como Capa"}
                                     </Button>
                                 </>
                             ) : (
                                 <>
                                     <h2 className="text-xl font-bold text-green-400 flex items-center gap-2">
-                                        <Check className="w-5 h-5" /> Resultado do Teste
+                                        <Check className="w-5 h-5" /> Sucesso!
                                     </h2>
                                     <div className="aspect-[3/4] rounded-xl overflow-hidden border border-white/10 relative group bg-black/50">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img src={testResult} alt="Generated Test" className="w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                            <Button className="bg-white text-black hover:bg-white/90" onClick={() => window.open(testResult, "_blank")}>
-                                                <Download className="w-4 h-4 mr-2" /> Ampliar
-                                            </Button>
-                                        </div>
                                     </div>
-                                    <Button onClick={() => setTestResult(null)} variant="outline" className="w-full border-white/10 text-white hover:bg-white/10">
-                                        Testar Novamente
+                                    <Button onClick={() => setTestingStyle(null)} variant="outline" className="w-full border-white/10 text-white hover:bg-white/10">
+                                        Fechar
                                     </Button>
                                 </>
                             )}
@@ -492,7 +485,7 @@ function AdminContent() {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
 
