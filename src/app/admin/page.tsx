@@ -473,8 +473,17 @@ export default function AdminPage() {
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {styles.map((style) => (
-                            <div key={style.firestoreId} className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 hover:border-blue-500/40 transition-all">
-                                <img src={style.image} alt={style.title} className="w-full h-full object-cover" />
+                            <div key={style.firestoreId} className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 hover:border-blue-500/40 transition-all bg-slate-800">
+                                {style.image ? (
+                                    <img src={style.image} alt={style.title} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-6 text-center">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+                                            <span className="text-sm font-bold text-white/50">{style.title.charAt(0)}</span>
+                                        </div>
+                                        <p className="text-[9px] text-white/30 uppercase tracking-widest font-medium">Sem Preview</p>
+                                    </div>
+                                )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                                 <div className="absolute bottom-0 left-0 p-3 w-full">
                                     <p className="text-sm font-bold text-white truncate">{style.title}</p>

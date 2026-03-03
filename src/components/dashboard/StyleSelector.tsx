@@ -18,8 +18,9 @@ export function StyleSelector({ selectedStyles, onSelect }: StyleSelectorProps) 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getStyles()
-            .then(setStyles)
+        fetch("/api/styles")
+            .then(res => res.json())
+            .then(data => setStyles(data.styles || []))
             .catch(err => console.error("Failed to load styles:", err))
             .finally(() => setLoading(false));
     }, []);
@@ -90,15 +91,23 @@ export function StyleSelector({ selectedStyles, onSelect }: StyleSelectorProps) 
                                             : "border-transparent hover:border-white/20 hover:scale-[1.01]"
                                     )}
                                 >
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={style.image}
-                                        alt={style.title}
-                                        className={cn(
-                                            "w-full h-full object-cover transition-transform duration-500",
-                                            isSelected ? "scale-110" : "group-hover:scale-110"
-                                        )}
-                                    />
+                                    {style.image ? (
+                                        <img
+                                            src={style.image}
+                                            alt={style.title}
+                                            className={cn(
+                                                "w-full h-full object-cover transition-transform duration-500",
+                                                isSelected ? "scale-110" : "group-hover:scale-110"
+                                            )}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-6 text-center">
+                                            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
+                                                <span className="text-xl font-bold text-white/50">{style.title.charAt(0)}</span>
+                                            </div>
+                                            <p className="text-[10px] text-white/30 uppercase tracking-widest font-medium">Sem Preview</p>
+                                        </div>
+                                    )}
                                     <div className={cn(
                                         "absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity",
                                         isSelected ? "opacity-100" : "opacity-60 group-hover:opacity-80"

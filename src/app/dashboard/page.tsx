@@ -22,6 +22,7 @@ export default function DashboardPage() {
     const [saving, setSaving] = useState(false);
     const [results, setResults] = useState<{ styleId: string; url: string; promptUsed: string }[] | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [allStyles, setAllStyles] = useState<any[]>([]);
 
     // Fetch user images and profile on mount
     useEffect(() => {
@@ -54,6 +55,14 @@ export default function DashboardPage() {
             });
         }
     }, [user]);
+
+    // Fetch all styles for title lookups
+    useEffect(() => {
+        fetch("/api/styles")
+            .then(res => res.json())
+            .then(data => setAllStyles(data.styles || []))
+            .catch(err => console.error("Error fetching styles:", err));
+    }, []);
 
     const handleSelectStyle = (id: string) => {
         if (selectedStyles.includes(id)) {
@@ -255,7 +264,7 @@ export default function DashboardPage() {
                                     </Button>
                                 </div>
                                 <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/50 backdrop-blur rounded text-[10px] text-white/80">
-                                    {STYLES.find(s => s.id === img.styleId)?.title}
+                                    {(allStyles.find(s => s.id === img.styleId) || STYLES.find(s => s.id === img.styleId))?.title}
                                 </div>
                             </div>
                         ))}
