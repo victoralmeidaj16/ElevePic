@@ -4,49 +4,49 @@ import { getFirestore } from "firebase-admin/firestore";
 let adminApp: App;
 
 if (!getApps().length) {
-    const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
-    const projectId = process.env.FIREBASE_PROJECT_ID || process.env.PROJECT_ID || "elevepic";
+    // Explicit project ID - verified from firebase.ts
+    const projectId = "elevepic";
+
+    // Credentials from environment
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    // Check both uppercase (standard) and lowercase (seen in user screenshot)
     const privateKeyRaw = process.env.FIREBASE_PRIVATE_KEY || process.env.private_key;
 
     console.log(`[Firebase Admin] Attempting initialization for project: ${projectId}`);
 
-    if (serviceAccountKey) {
-        try {
-            const serviceAccount = JSON.parse(serviceAccountKey);
-            adminApp = initializeApp({
-                credential: cert(serviceAccount),
-                projectId: serviceAccount.project_id || projectId,
-            });
-            console.log("[Firebase Admin] Initialized via Service Account JSON");
-        } catch (e) {
-            console.error("[Firebase Admin] Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY:", e);
-            throw e;
-        }
-    } else if (clientEmail && privateKeyRaw) {
+    if (clientEmail && privateKeyRaw) {
         // Sanitize Private Key
         let privateKey = privateKeyRaw.trim();
 
-        // Remove surrounding quotes if any
+        // Remove surrounding quotes if any (common copy-paste issue)
         if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
             privateKey = privateKey.substring(1, privateKey.length - 1);
         }
 
-        // Fix newlines
+        // Fix newlines - crucial for Render/Vercel
         privateKey = privateKey.replace(/\\n/g, '\n');
 
-        console.log(`[Firebase Admin] Initialized via individual credentials (Email: ${clientEmail.substring(0, 10)}...)`);
+        // Ensure it has the proper BEGIN/END headers
+        if (!privateKey.includes("-----BEGIN PRIVATE KEY-----")) {
+            console.error("[Firebase Admin] MISSING PRIVATE KEY HEADERS!");
+        }
 
-        adminApp = initializeApp({
-            credential: cert({
+        try {
+            adminApp = initializeApp({
+                credential: cert({
+                    projectId,
+                    clientEmail,
+                    privateKey,
+                }),
                 projectId,
-                clientEmail,
-                privateKey,
-            }),
-            projectId,
-        });
+            });
+            console.log(`[Firebase Admin] SUCCESS: Initialized with ${clientEmail}`);
+        } catch (e) {
+            console.error("[Firebase Admin] FATAL INITIALIZATION ERROR:", e);
+            throw e;
+        }
     } else {
-        console.warn("[Firebase Admin] Initialization fallback (No explicit credentials found)");
+        console.warn("[Firebase Admin] MISSING CREDENTIALS! Falling back to default...");
         adminApp = initializeApp({
             projectId,
         });
