@@ -19,7 +19,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const storage = getStorage(app);
-const db = getFirestore(app);
+const db = getFirestore(app, "database");
 
 // Initialize Analytics conditionally (client-side only)
 let analytics;
