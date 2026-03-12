@@ -14,7 +14,6 @@ export async function POST(req: Request) {
         const amounts: Record<string, number> = {
             starter: 9000,
             pro: 14000,
-            business: 14990,
         };
 
         const unitAmount = amounts[priceId] || 2990;
@@ -26,7 +25,7 @@ export async function POST(req: Request) {
                     price_data: {
                         currency: "brl",
                         product_data: {
-                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Inicial' : priceId === 'pro' ? 'Profissional' : 'Empresarial'}`,
+                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Inicial' : 'Profissional'}`,
                             description: "Headshots gerados por IA com qualidade de estúdio",
                         },
                         unit_amount: unitAmount,
