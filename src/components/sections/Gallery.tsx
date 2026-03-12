@@ -220,9 +220,13 @@ export function Gallery() {
                                 >
                                     <Card className="group overflow-hidden border-white/5 bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer" onClick={() => handleOpenStyle(item)}>
                                         <CardContent className="p-4 md:p-6 flex items-center gap-6">
-                                            {/* Icon/Image Placeholder */}
-                                            <div className={`w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center shadow-inner`}>
-                                                <item.icon className="w-8 h-8 text-white/80" />
+                                            {/* Style Cover Image */}
+                                            <div className="w-20 h-24 md:w-24 md:h-32 shrink-0 rounded-lg overflow-hidden border border-white/10 group-hover:border-primary/50 transition-all duration-300">
+                                                <img
+                                                    src={item.examples[0]}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                />
                                             </div>
 
                                             <div className="flex-1 min-w-0">
