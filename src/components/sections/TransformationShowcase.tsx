@@ -7,13 +7,13 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 const images = [
     { key: "direito", src: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Editorial" },
     { key: "saude", src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400", alt: "Médica Especialista" },
-    { key: "linkedin", src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400", alt: "Executivo LinkedIn" },
+    { key: "linkedin", src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400", alt: "Executivo LinkedIn" },
     { key: "direito", src: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Foco" },
     { key: "saude", src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400", alt: "Médico de Plantão" },
-    { key: "corporativo", src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400", alt: "Foto Corporativa" },
+    { key: "corporativo", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400", alt: "Foto Corporativa" },
     { key: "direito", src: "https://images.unsplash.com/photo-1556157382-97eda2d622ca?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Executive" },
     { key: "saude", src: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400", alt: "Consulta Médica" },
-    { key: "instagram", src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400", alt: "Criativo Instagram" },
+    { key: "instagram", src: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=400", alt: "Executivo Premium" },
 ];
 
 export function TransformationShowcase() {
