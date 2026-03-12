@@ -7,7 +7,6 @@ import { Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/Card";
 
 const TIERS = [
-const TIERS = [
     {
         id: "starter",
         name: "Inicial",
