@@ -5,15 +5,15 @@ import { FlipReveal, FlipRevealItem } from "@/components/ui/flip-reveal";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const images = [
+    { key: "direito", src: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Editorial" },
+    { key: "saude", src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400", alt: "Médica Especialista" },
     { key: "linkedin", src: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400", alt: "Executivo LinkedIn" },
-    { key: "instagram", src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400", alt: "Retrato Instagram" },
+    { key: "direito", src: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Foco" },
+    { key: "saude", src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=400", alt: "Médico de Plantão" },
     { key: "corporativo", src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400", alt: "Foto Corporativa" },
-    { key: "linkedin", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400", alt: "Perfil LinkedIn" },
-    { key: "corporativo", src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400", alt: "Retrato Corporativo" },
+    { key: "direito", src: "https://images.unsplash.com/photo-1556157382-97eda2d622ca?auto=format&fit=crop&q=80&w=400", alt: "Advocacia Executive" },
+    { key: "saude", src: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400", alt: "Consulta Médica" },
     { key: "instagram", src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400", alt: "Criativo Instagram" },
-    { key: "linkedin", src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400", alt: "Headshot LinkedIn" },
-    { key: "corporativo", src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400", alt: "Retrato Executiva" },
-    { key: "instagram", src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400", alt: "Lifestyle Instagram" },
 ];
 
 export function TransformationShowcase() {
@@ -41,11 +41,14 @@ export function TransformationShowcase() {
                         <ToggleGroupItem value="all" className="sm:px-5 rounded-md">
                             Todos
                         </ToggleGroupItem>
+                        <ToggleGroupItem value="saude" className="sm:px-5 rounded-md">
+                            Saúde
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="direito" className="sm:px-5 rounded-md">
+                            Direito
+                        </ToggleGroupItem>
                         <ToggleGroupItem value="linkedin" className="sm:px-5 rounded-md">
                             LinkedIn
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="instagram" className="sm:px-5 rounded-md">
-                            Instagram
                         </ToggleGroupItem>
                         <ToggleGroupItem value="corporativo" className="sm:px-5 rounded-md">
                             Corporativo

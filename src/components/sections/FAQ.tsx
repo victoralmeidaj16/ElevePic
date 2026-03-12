@@ -25,6 +25,10 @@ const FAQS = [
     {
         question: "Posso pedir reembolso se não gostar?",
         answer: "Se por algum motivo técnico a IA não conseguir gerar fotos com qualidade aceitável, nós analisaremos seu caso e processaremos o reembolso sem problemas."
+    },
+    {
+        question: "A plataforma está em conformidade com a LGPD?",
+        answer: "Sim, respeitamos integralmente a Lei Geral de Proteção de Dados (LGPD). Seus dados biométricos são usados estritamente para a geração do seu ensaio e não são compartilhados com terceiros sob nenhuma hipótese."
     }
 ];
 

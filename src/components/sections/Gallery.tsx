@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Dialog";
-import { ChevronRight, Briefcase, Camera, Trees, User, Coffee, GraduationCap, Palette } from "lucide-react";
+import { ChevronRight, Briefcase, Camera, Trees, User, Coffee, GraduationCap, Palette, HeartPulse, Gavel, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Category Data in Portuguese as requested
@@ -15,39 +15,39 @@ const CATEGORIES = {
         description: "Explore os estilos disponíveis para ensaios masculinos",
         items: [
             {
-                id: "m-profissao",
-                name: "Profissão",
-                description: "Ensaios focados em carreiras e profissões",
-                icon: Briefcase,
-                color: "from-blue-600 to-slate-800",
+                id: "m-saude",
+                name: "Área da Saúde",
+                description: "Médicos, dentistas e profissionais da saúde",
+                icon: HeartPulse,
+                color: "from-cyan-500 to-blue-700",
                 examples: [
-                    "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800"
                 ]
             },
             {
-                id: "m-estudio",
-                name: "Estúdio",
-                description: "Ensaios em ambiente de estúdio profissional",
-                icon: Camera,
-                color: "from-zinc-700 to-black",
+                id: "m-direito",
+                name: "Advocacia",
+                description: "Estilos clássicos e autoritários para advogados",
+                icon: Gavel,
+                color: "from-slate-700 to-slate-900",
                 examples: [
-                    "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1556157382-97eda2d622ca?auto=format&fit=crop&q=80&w=800"
                 ]
             },
             {
-                id: "m-externo",
-                name: "Externo",
-                description: "Ensaios em locações externas",
-                icon: Trees,
-                color: "from-blue-600 to-indigo-900",
+                id: "m-premium",
+                name: "Premium / CEO",
+                description: "O mais alto nível de autoridade e prestígio",
+                icon: Crown,
+                color: "from-amber-500 to-yellow-800",
                 examples: [
-                    "https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800"
                 ]
             },
             {
@@ -63,15 +63,15 @@ const CATEGORIES = {
                 ]
             },
             {
-                id: "m-hobbies",
-                name: "Hobbies",
-                description: "Ensaios temáticos com seus hobbies favoritos",
-                icon: Palette,
-                color: "from-orange-600 to-red-900",
+                id: "m-estudio",
+                name: "Estúdio",
+                description: "Ensaios em ambiente de estúdio profissional",
+                icon: Camera,
+                color: "from-zinc-700 to-black",
                 examples: [
-                    "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1517404215738-15263e9f9178?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop"
                 ]
             },
         ]
@@ -81,11 +81,23 @@ const CATEGORIES = {
         description: "Explore os estilos disponíveis para ensaios femininos",
         items: [
             {
-                id: "f-profissao",
-                name: "Profissão",
-                description: "Ensaios focados em carreiras e profissões",
-                icon: Briefcase,
-                color: "from-blue-600 to-slate-900",
+                id: "f-saude",
+                name: "Área da Saúde",
+                description: "Médicas, dentistas e profissionais da saúde",
+                icon: HeartPulse,
+                color: "from-cyan-400 to-blue-600",
+                examples: [
+                    "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1527613052228-8a897e77301f?auto=format&fit=crop&q=80&w=800",
+                    "https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&q=80&w=800"
+                ]
+            },
+            {
+                id: "f-direito",
+                name: "Advocacia",
+                description: "Posturas de confiança e autoridade para advogadas",
+                icon: Gavel,
+                color: "from-slate-600 to-slate-800",
                 examples: [
                     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
                     "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop",
@@ -93,27 +105,15 @@ const CATEGORIES = {
                 ]
             },
             {
-                id: "f-estudio",
-                name: "Estúdio",
-                description: "Ensaios em ambiente de estúdio profissional",
-                icon: Camera,
-                color: "from-zinc-700 to-black",
+                id: "f-premium",
+                name: "Premium / Executiva",
+                description: "O mais alto nível para CEOs e líderes",
+                icon: Crown,
+                color: "from-amber-400 to-yellow-700",
                 examples: [
-                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop"
-                ]
-            },
-            {
-                id: "f-externo",
-                name: "Externo",
-                description: "Ensaios em locações externas e natureza",
-                icon: Trees,
-                color: "from-emerald-500 to-teal-900",
-                examples: [
-                    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1552058544-f2b08422138a?q=80&w=800&auto=format&fit=crop",
-                    "https://images.unsplash.com/photo-1554151228-14d9def656ec?q=80&w=800&auto=format&fit=crop"
+                    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop"
                 ]
             },
             {

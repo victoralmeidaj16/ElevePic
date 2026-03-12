@@ -6,19 +6,19 @@ import { Upload, Sliders, CheckCircle } from "lucide-react";
 export function Steps() {
     const steps = [
         {
-            icon: Upload,
-            title: "1. Upload Seguro",
-            description: "Envie 10-20 selfies do seu rolo de câmera. Todo processamento é criptografado.",
+            icon: Sliders,
+            title: "1. Escolha seu Estilo",
+            description: "Navegue pelo nosso catálogo e selecione exatamente como você quer a sua imagem final.",
         },
         {
-            icon: Sliders,
-            title: "2. Escolha o Estilo",
-            description: "Selecione entre Corporate, Tech, Creative ou Executive.",
+            icon: Upload,
+            title: "2. Upload Inteligente",
+            description: "Envie selfies simples do seu celular. Nosso sistema é rápido e 100% seguro.",
         },
         {
             icon: CheckCircle,
-            title: "3. Download em 4K",
-            description: "Receba seu pacote de headshots em alta resolução em menos de 1 minuto.",
+            title: "3. Sua Melhor Versão",
+            description: "Receba seu pacote de fotos profissionais em alta resolução prontas para impacto máximo.",
         },
     ];
 
