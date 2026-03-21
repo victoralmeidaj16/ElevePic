@@ -9,13 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 const TIERS = [
     {
         id: "starter",
-        name: "Inicial",
-        price: "R$ 90",
-        description: "Perfeito para testar seus primeiros headshots profissionais.",
+        name: "Essencial",
+        price: "R$ 89,90",
+        description: "Ideal para quem quer experimentar a qualidade dos headshots profissionais por IA.",
         features: [
-            "40 Fotos Geradas por IA",
-            "2 Estilos Únicos",
-            "Resolução Padrão",
+            "5 Fotos Geradas por IA",
+            "Estilos à sua escolha",
+            "Alta Resolução",
             "Entrega em 24h",
         ],
         cta: "Começar Agora",
@@ -24,11 +24,11 @@ const TIERS = [
     {
         id: "pro",
         name: "Profissional",
-        price: "R$ 140",
-        description: "A escolha mais popular para profissionais e criadores.",
+        price: "R$ 109,90",
+        description: "A escolha mais popular para profissionais e criadores de conteúdo.",
         features: [
-            "100 Fotos Geradas por IA",
-            "5 Estilos Únicos",
+            "12 Fotos Geradas por IA",
+            "Múltiplos Estilos Únicos",
             "Alta Resolução (4K)",
             "Prioridade: Entrega em 2h",
             "Licença Comercial",

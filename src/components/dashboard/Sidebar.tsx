@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -60,9 +61,13 @@ export function Sidebar() {
             {/* Logo */}
             <div className="p-6 border-b border-white/5">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-bold text-white">
-                        E
-                    </div>
+                    <Image 
+                        src="/logo.png" 
+                        alt="ElevePic Logo" 
+                        width={32} 
+                        height={32} 
+                        className="rounded-lg shadow-md mix-blend-screen" 
+                    />
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                         ElevePic
                     </span>

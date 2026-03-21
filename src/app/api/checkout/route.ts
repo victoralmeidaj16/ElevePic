@@ -12,11 +12,11 @@ export async function POST(req: Request) {
         // but robustly we should validate it against allowed prices.
 
         const amounts: Record<string, number> = {
-            starter: 9000,
-            pro: 14000,
+            starter: 8990,
+            pro: 10990,
         };
 
-        const unitAmount = amounts[priceId] || 2990;
+        const unitAmount = amounts[priceId] ?? 8990;
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
                     price_data: {
                         currency: "brl",
                         product_data: {
-                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Inicial' : 'Profissional'}`,
+                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Essencial' : 'Profissional'}`,
                             description: "Headshots gerados por IA com qualidade de estúdio",
                         },
                         unit_amount: unitAmount,
@@ -34,6 +34,9 @@ export async function POST(req: Request) {
                 },
             ],
             mode: "payment",
+            metadata: {
+                credits: priceId === 'pro' ? '12' : '5'
+            },
             success_url: `${req.headers.get("origin")}/signup?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.get("origin")}/?canceled=true`,
         });

@@ -6,17 +6,18 @@ import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
-import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, ShieldAlert, Sparkles, Image as ImageIcon, Download } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, Database, X, Check, AlertTriangle, ShieldAlert, Sparkles, Image as ImageIcon, Download, ArrowUp, ArrowDown } from "lucide-react";
 import { FirestoreStyle } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
 import { ADMIN_EMAIL } from "@/lib/constants";
 
-const EMPTY_FORM: Omit<StyleOption, "id"> = {
+const EMPTY_FORM: Omit<StyleOption, "id"> & { tags: string[] } = {
     title: "",
     category: "editorial",
     image: "",
     prompt: "",
+    tags: [],
 };
 
 function AdminContent() {
@@ -29,11 +30,14 @@ function AdminContent() {
     const [seedDone, setSeedDone] = useState(false);
     const [editingStyle, setEditingStyle] = useState<FirestoreStyle | null>(null);
     const [isAdding, setIsAdding] = useState(false);
-    const [formData, setFormData] = useState<Omit<StyleOption, "id">>(EMPTY_FORM);
+    const [formData, setFormData] = useState<Omit<StyleOption, "id"> & { tags: string[] }>(EMPTY_FORM);
     const [saving, setSaving] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [tagInput, setTagInput] = useState("");
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
     // Generation states
     const [testingStyle, setTestingStyle] = useState<FirestoreStyle | null>(null);
@@ -93,6 +97,8 @@ function AdminContent() {
         setEditingStyle(null);
         setIsAdding(true);
         setError(null);
+        setTagInput("");
+        setImagePreview(null);
     };
 
     const openEdit = (style: FirestoreStyle) => {
@@ -101,10 +107,37 @@ function AdminContent() {
             category: style.category,
             image: style.image,
             prompt: style.prompt,
+            tags: (style as any).tags || [],
         });
         setEditingStyle(style);
         setIsAdding(false);
         setError(null);
+        setTagInput("");
+        setImagePreview(style.image || null);
+    };
+
+    const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64 = reader.result as string;
+            setFormData(p => ({ ...p, image: base64 }));
+            setImagePreview(base64);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const addTag = () => {
+        const t = tagInput.trim();
+        if (t && !formData.tags.includes(t)) {
+            setFormData(p => ({ ...p, tags: [...p.tags, t] }));
+        }
+        setTagInput("");
+    };
+
+    const removeTag = (tag: string) => {
+        setFormData(p => ({ ...p, tags: p.tags.filter(t => t !== tag) }));
     };
 
     const closeForm = () => {
@@ -127,6 +160,7 @@ function AdminContent() {
                 category: formData.category,
                 image: formData.image || "",
                 prompt: formData.prompt,
+                tags: formData.tags,
             };
 
             const endpoint = "/api/admin/styles";
@@ -168,6 +202,48 @@ function AdminContent() {
             setError(e?.message || "Erro ao excluir.");
         } finally {
             setDeletingId(null);
+        }
+    };
+
+    const handleMove = async (index: number, direction: 'up' | 'down') => {
+        if (direction === 'up' && index === 0) return;
+        if (direction === 'down' && index === styles.length - 1) return;
+
+        const newStyles = [...styles];
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        const item1 = newStyles[index];
+        const item2 = newStyles[targetIndex];
+
+        let val1 = item2.order || Date.now();
+        let val2 = item1.order || Date.now() + 1;
+
+        if (val1 === val2) {
+            val1 = direction === 'up' ? val2 - 1000 : val2 + 1000;
+        }
+
+        // Optimistic update
+        newStyles[index] = { ...item1, order: val1 };
+        newStyles[targetIndex] = { ...item2, order: val2 };
+        newStyles.sort((a, b) => (a.order || 0) - (b.order || 0));
+        setStyles(newStyles);
+
+        try {
+            await Promise.all([
+                fetch("/api/admin/styles", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ firestoreId: item1.firestoreId, order: val1 })
+                }),
+                fetch("/api/admin/styles", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ firestoreId: item2.firestoreId, order: val2 })
+                })
+            ]);
+        } catch (e) {
+            console.error("Move error:", e);
+            setError("Erro ao reordenar.");
+            loadStyles(); // Revert on error
         }
     };
 
@@ -334,6 +410,58 @@ function AdminContent() {
                                 </div>
                             </div>
 
+                            {/* Tags */}
+                            <div className="space-y-2">
+                                <Label>Tags</Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        value={tagInput}
+                                        onChange={e => setTagInput(e.target.value)}
+                                        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag(); }}}
+                                        placeholder="Ex: P&B, Cinemático..."
+                                        className="flex-1"
+                                    />
+                                    <Button type="button" variant="outline" onClick={addTag} className="border-white/10 shrink-0">+ Tag</Button>
+                                </div>
+                                {formData.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 pt-1">
+                                        {formData.tags.map(tag => (
+                                            <span key={tag} className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/20">
+                                                {tag}
+                                                <button onClick={() => removeTag(tag)} className="hover:text-white transition-colors"><X className="w-3 h-3" /></button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Image Upload */}
+                            <div className="space-y-2">
+                                <Label>Imagem de Capa</Label>
+                                <div className="grid grid-cols-2 gap-3 items-start">
+                                    <div className="space-y-2">
+                                        <Input
+                                            value={formData.image.startsWith("data:") ? "" : formData.image}
+                                            onChange={e => { setFormData(p => ({ ...p, image: e.target.value })); setImagePreview(e.target.value || null); }}
+                                            placeholder="https://... ou faça upload"
+                                            className="text-xs"
+                                        />
+                                        <label className="flex items-center gap-2 cursor-pointer w-full px-3 py-2 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm text-slate-300">
+                                            <ImageIcon className="w-4 h-4" />
+                                            Upload arquivo
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleImageFileChange} />
+                                        </label>
+                                    </div>
+                                    <div className="aspect-[3/4] rounded-lg overflow-hidden border border-white/10 bg-slate-800 flex items-center justify-center">
+                                        {imagePreview ? (
+                                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <p className="text-xs text-slate-500 text-center px-2">Pré-visualização da capa</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="prompt">Prompt da IA</Label>
                                 <textarea
@@ -420,7 +548,27 @@ function AdminContent() {
                     </div>
                 )}
 
-                {/* Styles Table */}
+                {/* Category filter */}
+                {!loading && styles.length > 0 && (
+                    <div className="flex flex-wrap gap-2 items-center">
+                        <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">Filtrar:</span>
+                        {["all", ...Array.from(new Set(styles.map(s => s.category)))].map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setCategoryFilter(cat)}
+                                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
+                                    categoryFilter === cat
+                                        ? "bg-blue-600 border-blue-500 text-white"
+                                        : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                                }`}
+                            >
+                                {cat === "all" ? `✨ Todos (${styles.length})` : `${cat} (${styles.filter(s => s.category === cat).length})`}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Styles Grid */}
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {[...Array(8)].map((_, i) => (
@@ -435,7 +583,7 @@ function AdminContent() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {styles.map((style) => (
+                        {styles.filter(s => categoryFilter === "all" || s.category === categoryFilter).map((style, index) => (
                             <div key={style.firestoreId} className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 hover:border-blue-500/40 transition-all bg-slate-800">
                                 {style.image ? (
                                     <img src={style.image} alt={style.title} className="w-full h-full object-cover" />
@@ -453,7 +601,25 @@ function AdminContent() {
                                     <p className="text-xs text-slate-400 capitalize">{style.category}</p>
                                 </div>
                                 {/* Action Buttons */}
-                                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-wrap justify-end max-w-[120px]">
+                                    {index > 0 && (
+                                        <button
+                                            onClick={() => handleMove(index, 'up')}
+                                            className="w-8 h-8 bg-black/50 hover:bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm transition-colors"
+                                            title="Mover para cima"
+                                        >
+                                            <ArrowUp className="w-3.5 h-3.5 text-white" />
+                                        </button>
+                                    )}
+                                    {index < styles.length - 1 && (
+                                        <button
+                                            onClick={() => handleMove(index, 'down')}
+                                            className="w-8 h-8 bg-black/50 hover:bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm transition-colors"
+                                            title="Mover para baixo"
+                                        >
+                                            <ArrowDown className="w-3.5 h-3.5 text-white" />
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => handleOpenTest(style)}
                                         className="w-8 h-8 bg-white/10 hover:bg-yellow-600 rounded-lg flex items-center justify-center backdrop-blur-sm transition-colors"

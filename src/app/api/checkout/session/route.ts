@@ -17,6 +17,7 @@ export async function GET(req: Request) {
         return NextResponse.json({
             email: session.customer_details?.email || "",
             name: session.customer_details?.name || "",
+            credits: parseInt(session.metadata?.credits || "40")
         });
     } catch (error) {
         console.error("Error retrieving session:", error);

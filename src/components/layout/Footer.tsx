@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Twitter, Instagram, Linkedin, Send } from "lucide-react";
+import Image from "next/image";
+import { Instagram, Send } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
@@ -13,19 +14,20 @@ export function Footer() {
                     {/* Brand Column */}
                     <div className="space-y-4">
                         <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">E</span>
-                            </div>
+                            <Image 
+                                src="/logo.png" 
+                                alt="ElevePic Logo" 
+                                width={32} 
+                                height={32} 
+                                className="rounded-lg" 
+                            />
                             ElevePic
                         </Link>
                         <p className="text-slate-400 leading-relaxed text-sm">
                             Transformando sua presença digital com fotografia via IA. Headshots profissionais, a qualquer hora, em qualquer lugar.
                         </p>
                         <div className="flex space-x-4 pt-2">
-                            <SocialLink href="#" icon={Twitter} />
                             <SocialLink href="#" icon={Instagram} />
-                            <SocialLink href="#" icon={Linkedin} />
-                            <SocialLink href="#" icon={Github} />
                         </div>
                     </div>
 
@@ -44,9 +46,6 @@ export function Footer() {
                     <div className="space-y-4">
                         <h4 className="text-lg font-semibold text-white">Empresa</h4>
                         <ul className="space-y-2">
-                            <FooterLink href="/about">Sobre Nós</FooterLink>
-                            <FooterLink href="/blog">Blog</FooterLink>
-                            <FooterLink href="/careers">Carreiras</FooterLink>
                             <FooterLink href="/contact">Contato</FooterLink>
                         </ul>
                     </div>

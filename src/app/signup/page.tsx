@@ -19,7 +19,7 @@ function SignupForm() {
     const { signInWithGoogle } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [sessionCredits, setSessionCredits] = useState<number | null>(null);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -39,13 +39,16 @@ function SignupForm() {
                     if (res.ok) {
                         const data = await res.json();
                         if (data.email) {
-                            const names = data.name.split(" ");
+                            const names = (data.name || "").split(" ");
                             setFormData(prev => ({
                                 ...prev,
                                 email: data.email,
                                 firstName: names[0] || "",
                                 lastName: names.slice(1).join(" ") || ""
                             }));
+                            if (data.credits) {
+                                setSessionCredits(data.credits);
+                            }
                         }
                     }
                 } catch (error) {
@@ -69,7 +72,7 @@ function SignupForm() {
         setError(null);
 
         if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
-            setError("Please fill in all fields.");
+            setError("Por favor, preencha todos os campos.");
             setIsLoading(false);
             return;
         }
@@ -85,15 +88,30 @@ function SignupForm() {
                 displayName: `${formData.firstName} ${formData.lastName}`
             });
 
+            // Initialize user profile in Firestore via server API (uses Admin SDK — avoids client Firestore issues)
+            const profileRes = await fetch("/api/profile/init", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    uid: userCredential.user.uid,
+                    credits: sessionCredits ?? undefined,
+                }),
+            });
+
+            if (!profileRes.ok) {
+                const profileErr = await profileRes.json();
+                throw new Error(profileErr.error || "Falha ao criar perfil.");
+            }
+
             router.push("/dashboard");
         } catch (err: any) {
             console.error(err);
             if (err.code === "auth/email-already-in-use") {
-                setError("Email already registered.");
+                setError("Email já cadastrado.");
             } else if (err.code === "auth/weak-password") {
-                setError("Password should be at least 6 characters.");
+                setError("A senha deve ter pelo menos 6 caracteres.");
             } else {
-                setError("Failed to create account. Please try again.");
+                setError("Falha ao criar conta. Tente novamente.");
             }
         } finally {
             setIsLoading(false);

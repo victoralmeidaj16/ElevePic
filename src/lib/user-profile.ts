@@ -13,7 +13,7 @@ const INITIAL_CREDITS = 5;
  * Fetches the user profile from Firestore.
  * If it doesn't exist, creates a new profile with the initial credit balance.
  */
-export async function getUserProfile(userId: string): Promise<UserProfile> {
+export async function getUserProfile(userId: string, initialCreditsOverride?: number): Promise<UserProfile> {
     try {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
@@ -26,10 +26,10 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
                 createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(),
             };
         } else {
-            // Create a new profile with initial credits
+            // Create a new profile with initial credits (default or override)
             const newProfile: UserProfile = {
                 uid: userId,
-                credits: INITIAL_CREDITS,
+                credits: initialCreditsOverride !== undefined ? initialCreditsOverride : INITIAL_CREDITS,
                 createdAt: new Date(),
             };
 

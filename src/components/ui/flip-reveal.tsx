@@ -46,22 +46,21 @@ export const FlipReveal = ({ keys, hideClass = "", showClass = "", ...props }: F
             });
 
             Flip.from(state, {
-                duration: 0.6,
+                duration: 0.4,
                 scale: true,
                 ease: "power1.inOut",
-                stagger: 0.05,
-                absolute: true,
+                stagger: 0.04,
                 onEnter: (elements) =>
                     gsap.fromTo(
                         elements,
-                        { opacity: 0, scale: 0 },
+                        { opacity: 0, scale: 0.85 },
                         {
                             opacity: 1,
                             scale: 1,
-                            duration: 0.8,
+                            duration: 0.35,
                         },
                     ),
-                onLeave: (elements) => gsap.to(elements, { opacity: 0, scale: 0, duration: 0.8 }),
+                onLeave: (elements) => gsap.to(elements, { opacity: 0, scale: 0.85, duration: 0.25 }),
             });
         },
 

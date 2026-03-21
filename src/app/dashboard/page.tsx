@@ -9,7 +9,6 @@ import { STYLES } from "@/lib/styles-data";
 import { useAuth } from "@/context/AuthContext";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { saveGeneration } from "@/lib/gallery-storage";
-import { getUserProfile, deductCredits, UserProfile } from "@/lib/user-profile";
 import { cn } from "@/lib/utils";
 import { ADMIN_EMAIL } from "@/lib/constants";
 
@@ -36,19 +35,23 @@ export default function DashboardPage() {
 
             const isAdmin = user.email === ADMIN_EMAIL;
 
-            let fetchProfile: Promise<void> | Promise<UserProfile>;
+            let fetchProfile: Promise<void>;
 
             if (isAdmin) {
                 // Admin gets infinite credits locally, no need to touch Firestore for profile
                 setCredits(999999);
                 fetchProfile = Promise.resolve();
             } else {
-                fetchProfile = getUserProfile(user.uid).then(profile => {
-                    setCredits(profile.credits);
-                }).catch(err => {
-                    console.error("Error fetching profile:", err);
-                    setError("Não foi possível carregar os créditos. Verifique as permissões do banco de dados.");
-                });
+                fetchProfile = fetch(`/api/profile/credits?uid=${user.uid}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) throw new Error(data.error);
+                        setCredits(data.credits ?? 0);
+                    })
+                    .catch(err => {
+                        console.error("Error fetching credits:", err);
+                        setError("Não foi possível carregar os créditos.");
+                    });
             }
 
             Promise.all([fetchImages, fetchProfile]).finally(() => {
@@ -76,7 +79,7 @@ export default function DashboardPage() {
     const handleGenerate = async () => {
         if (selectedStyles.length === 0 || userImages.length < 3) return;
 
-        const isAdmin = user?.email === "123indiozinhos@gmail.com";
+        const isAdmin = user?.email === ADMIN_EMAIL;
 
         if (!isAdmin && credits < selectedStyles.length) {
             setError("Créditos insuficientes para gerar a quantidade de estilos selecionados.");
@@ -128,9 +131,13 @@ export default function DashboardPage() {
                 promptUsed: s.promptUsed
             })));
 
-            // Deduct credits and update state only if not admin
+            // Deduct credits via server API and update state only if not admin
             if (!isAdmin) {
-                await deductCredits(user!.uid, data.images.length);
+                await fetch("/api/profile/credits", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ uid: user!.uid, amount: data.images.length }),
+                });
                 setCredits(prev => prev - data.images.length);
             }
 
@@ -205,7 +212,7 @@ export default function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
-                    {user?.email === "123indiozinhos@gmail.com" && (
+                    {user?.email === ADMIN_EMAIL && (
                         <div className="flex gap-2">
                             <Link href="/dashboard/admin">
                                 <Button variant="outline" className="border-white/10 hover:bg-white/5 gap-2">
@@ -221,11 +228,46 @@ export default function DashboardPage() {
                             </Link>
                         </div>
                     )}
-                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
+                <div className="flex flex-wrap items-center gap-4">
+                    {/* Floating Summary & Generate Button (Now at the top) */}
+                    <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-2 pl-4 rounded-2xl shadow-xl">
+                        <div className="hidden sm:flex flex-col border-r border-white/10 pr-4 mr-2">
+                            {selectedCount > 0 ? (
+                                <>
+                                    <span className="text-xs font-medium text-white whitespace-nowrap">
+                                        {selectedCount} {selectedCount === 1 ? "seleção" : "seleções"}
+                                    </span>
+                                    <span className="text-[10px] text-white/50">
+                                        -{selectedCount} créd.
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                    Selecione estilos
+                                </span>
+                            )}
+                        </div>
+                        
+                        <Button
+                            size="sm"
+                            disabled={selectedCount === 0 || !hasEnoughImages || generating || saving || (credits < selectedCount && user?.email !== ADMIN_EMAIL)}
+                            onClick={handleGenerate}
+                            className="bg-primary hover:bg-primary/90 font-bold px-6 shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                        >
+                            {generating ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                `Gerar ${selectedCount > 0 ? selectedCount : ""} Foto${selectedCount !== 1 ? "s" : ""}`
+                            )}
+                        </Button>
+                    </div>
+
+                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-full h-[46px]">
                         <Zap className="w-5 h-5 text-primary fill-primary" />
                         <span className="font-bold text-white">
-                            {user?.email === "123indiozinhos@gmail.com" ? "Admin" : `${credits} Créditos`}
+                            {user?.email === ADMIN_EMAIL ? "Admin" : `${credits} Créditos`}
                         </span>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -325,34 +367,6 @@ export default function DashboardPage() {
                             selectedStyles={selectedStyles}
                             onSelect={handleSelectStyle}
                         />
-                    </div>
-
-                    {/* Action Bar */}
-                    <div className="sticky bottom-6 bg-black/80 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center justify-between shadow-2xl z-20">
-                        <div className="flex flex-col">
-                            {selectedCount > 0 ? (
-                                <>
-                                    <span className="text-sm font-medium text-white">
-                                        {selectedCount} {selectedCount === 1 ? "imagem selecionada" : "imagens selecionadas"}
-                                    </span>
-                                    <span className="text-xs text-white/50">
-                                        Custo total: {selectedCount} {selectedCount === 1 ? "crédito" : "créditos"}
-                                    </span>
-                                </>
-                            ) : (
-                                <span className="text-sm text-muted-foreground">
-                                    Selecione as imagens para replicar
-                                </span>
-                            )}
-                        </div>
-                        <Button
-                            size="lg"
-                            disabled={selectedCount === 0 || !hasEnoughImages || generating || saving || credits < selectedCount}
-                            onClick={handleGenerate}
-                            className="bg-primary hover:bg-primary/90 min-w-[200px] font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.5)]"
-                        >
-                            {generating ? "Gerando..." : `Gerar ${selectedCount > 0 ? selectedCount + " " : ""}Fotos`}
-                        </Button>
                     </div>
                 </div>
             )}
