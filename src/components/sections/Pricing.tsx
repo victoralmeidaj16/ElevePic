@@ -11,7 +11,7 @@ const TIERS = [
         id: "starter",
         name: "Essencial",
         price: "R$ 89,90",
-        description: "Ideal para quem quer experimentar a qualidade dos headshots profissionais por IA.",
+        description: "Para profissionais que precisam de fotos impecáveis para LinkedIn e portfólio.",
         features: [
             "5 Fotos Geradas por IA",
             "Estilos à sua escolha",
@@ -65,10 +65,13 @@ export function Pricing() {
         <section id="pricing" className="py-24 relative bg-background">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16 space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                        Planos
+                    </span>
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
                         Investimento Único
                     </h2>
-                    <p className="text-slate-400 max-w-2xl text-lg">
+                    <p className="text-muted-foreground max-w-2xl text-lg">
                         Sem assinaturas mensais. Pague uma vez, use para sempre.
                     </p>
                 </div>
@@ -84,29 +87,29 @@ export function Pricing() {
                             className="relative"
                         >
                             <Card className={`h-full flex flex-col transition-all duration-300 rounded-2xl ${tier.popular
-                                ? 'bg-slate-900 border-blue-500/50 shadow-2xl shadow-blue-900/20 scale-105 z-10'
-                                : 'bg-slate-950/50 border-white/5 hover:border-white/10'
+                                ? 'bg-card border-primary/50 shadow-2xl shadow-primary/20 scale-105 z-10'
+                                : 'bg-background/50 border-white/5 hover:border-white/10'
                                 }`}>
                                 {tier.popular && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-600 text-xs font-bold uppercase tracking-widest text-white shadow-lg">
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-xs font-bold uppercase tracking-widest text-white shadow-lg">
                                         Mais Escolhido
                                     </div>
                                 )}
 
                                 <CardHeader>
-                                    <CardTitle className="text-xl font-medium text-slate-300">{tier.name}</CardTitle>
+                                    <CardTitle className="text-xl font-medium text-muted-foreground">{tier.name}</CardTitle>
                                     <div className="flex items-baseline gap-1 mt-4">
-                                        <span className="text-4xl font-bold text-white">{tier.price}</span>
-                                        <span className="text-slate-500 text-sm">/pacote</span>
+                                        <span className="text-4xl font-bold text-foreground">{tier.price}</span>
+                                        <span className="text-muted-foreground text-sm">/pacote</span>
                                     </div>
-                                    <CardDescription className="mt-2 text-slate-400">{tier.description}</CardDescription>
+                                    <CardDescription className="mt-2 text-muted-foreground">{tier.description}</CardDescription>
                                 </CardHeader>
 
                                 <CardContent className="flex-1">
                                     <ul className="space-y-4 mt-4">
                                         {tier.features.map((feature) => (
-                                            <li key={feature} className="flex items-start gap-3 text-sm text-slate-300">
-                                                <Check className={`w-5 h-5 shrink-0 ${tier.popular ? 'text-blue-500' : 'text-slate-500'}`} />
+                                            <li key={feature} className="flex items-start gap-3 text-sm text-foreground">
+                                                <Check className={`w-5 h-5 shrink-0 ${tier.popular ? 'text-primary' : 'text-muted-foreground'}`} />
                                                 <span>{feature}</span>
                                             </li>
                                         ))}
@@ -116,8 +119,8 @@ export function Pricing() {
                                 <CardFooter>
                                     <Button
                                         className={`w-full rounded-xl py-6 ${tier.popular
-                                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/20'
-                                            : 'bg-white/5 hover:bg-white/10 text-white border border-white/5'
+                                            ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
+                                            : 'bg-white/5 hover:bg-white/10 text-foreground border border-white/5'
                                             }`}
                                         variant={tier.popular ? 'default' : 'outline'}
                                         size="lg"

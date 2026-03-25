@@ -28,13 +28,16 @@ const benefits = [
 
 export function Benefits() {
     return (
-        <section className="py-24 bg-slate-900/50">
+        <section className="py-24 bg-card/50">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-16 space-y-4">
-                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                        Vantagens
+                    </span>
+                    <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
                         Por que escolher a ElevePic?
                     </h2>
-                    <p className="text-slate-400 max-w-2xl text-lg">
+                    <p className="text-muted-foreground max-w-2xl text-lg">
                         Unimos inteligência artificial de ponta com princípios de fotografia corporativa.
                     </p>
                 </div>
@@ -47,13 +50,13 @@ export function Benefits() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className={`p-8 rounded-2xl border border-white/5 bg-slate-900 hover:bg-slate-800/80 transition-all duration-300 group`}
+                            className="p-8 rounded-2xl border border-white/5 bg-card hover:bg-muted/80 transition-all duration-300 group"
                         >
-                            <div className={`w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors`}>
-                                <benefit.icon className={`w-6 h-6 text-blue-500`} />
+                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                                <benefit.icon className="w-6 h-6 text-primary" />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-white">{benefit.title}</h3>
-                            <p className="text-slate-400 leading-relaxed text-sm">
+                            <h3 className="text-xl font-bold mb-3 text-foreground">{benefit.title}</h3>
+                            <p className="text-muted-foreground leading-relaxed text-sm">
                                 {benefit.description}
                             </p>
                         </motion.div>

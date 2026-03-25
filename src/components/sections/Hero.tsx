@@ -64,7 +64,7 @@ export function Hero() {
                             ))}
                         </div>
                         <p className="text-left font-medium text-muted-foreground">
-                            from 200+ reviews
+                            mais de 200 avaliações
                         </p>
                     </div>
                 </div>

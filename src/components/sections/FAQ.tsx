@@ -24,7 +24,7 @@ const FAQS = [
     },
     {
         question: "Posso pedir reembolso se não gostar?",
-        answer: "Se por algum motivo técnico a IA não conseguir gerar fotos com qualidade aceitável, nós analisaremos seu caso e processaremos o reembolso sem problemas."
+        answer: "Sim. Se não ficar satisfeito com o resultado, entre em contato em até 7 dias após a entrega e processaremos o reembolso integral sem burocracia. Sua satisfação é nossa prioridade."
     },
     {
         question: "A plataforma está em conformidade com a LGPD?",
@@ -39,6 +39,9 @@ export function FAQ() {
         <section className="py-24 bg-gradient-to-b from-black/0 to-black/40 relative">
             <div className="container px-4 md:px-6 max-w-3xl">
                 <div className="text-center mb-12 space-y-4">
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                        FAQ
+                    </span>
                     <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
                         Dúvidas Frequentes
                     </h2>

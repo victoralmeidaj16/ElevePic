@@ -82,11 +82,14 @@ export function TransformationShowcase() {
         <section className="py-24 bg-background relative overflow-hidden border-t border-white/5">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center text-center mb-12 space-y-4">
+                    <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
+                        Resultados Reais
+                    </span>
                     <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
                         Galeria de Resultados
                     </h2>
                     <p className="text-muted-foreground max-w-2xl text-lg">
-                        Veja fotos reais criadas pela nossa IA. Filtre por estilo para explorar as possibilidades.
+                        Veja fotos criadas pela nossa IA. Filtre por estilo para explorar as possibilidades.
                     </p>
                 </div>
 
@@ -144,7 +147,6 @@ export function TransformationShowcase() {
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                                                     <span className="text-white font-bold text-sm tracking-tight">{style.title}</span>
-                                                    <span className="text-white/60 text-[10px] uppercase tracking-wider">{style.category === 'men' ? 'Masculino' : 'Feminino'}</span>
                                                 </div>
                                             </div>
                                         ))}
@@ -175,7 +177,6 @@ export function TransformationShowcase() {
                                                             />
                                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                                                                 <span className="text-white font-bold text-sm tracking-tight">{style.title}</span>
-                                                                <span className="text-white/60 text-[10px] uppercase tracking-wider">{style.category === 'men' ? 'Masculino' : 'Feminino'}</span>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -230,7 +231,6 @@ export function TransformationShowcase() {
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                                                     <span className="text-white font-bold text-sm tracking-tight">{style.title}</span>
-                                                    <span className="text-white/60 text-[10px] uppercase tracking-wider">{style.category === 'men' ? 'Masculino' : 'Feminino'}</span>
                                                 </div>
                                             </div>
                                         </FlipRevealItem>
@@ -242,7 +242,7 @@ export function TransformationShowcase() {
                 </div>
 
                 <p className="text-center text-sm text-muted-foreground mt-8 italic">
-                    * Resultados reais gerados pela plataforma ElevePic.
+                    Resultados gerados pela plataforma ElevePic.
                 </p>
             </div>
         </section>
