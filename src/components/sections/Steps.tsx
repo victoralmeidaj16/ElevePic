@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Upload, Sliders, CheckCircle } from "lucide-react";
+import { Upload, Sliders, CheckCircle, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function Steps() {
     const steps = [
@@ -61,6 +62,17 @@ export function Steps() {
                             )}
                         </motion.div>
                     ))}
+                </div>
+
+                <div className="flex justify-center mt-16">
+                    <Button
+                        size="lg"
+                        className="rounded-full px-8 text-lg h-12"
+                        onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
+                        Começar agora
+                        <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
                 </div>
             </div>
         </section>

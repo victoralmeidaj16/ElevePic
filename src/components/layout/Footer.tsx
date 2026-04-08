@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram, Send } from "lucide-react";
-import { Input } from "@/components/ui/Input";
+import { Instagram } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export function Footer() {
     return (
         <footer className="border-t border-white/5 bg-slate-950 pt-16 pb-8">
             <div className="container px-4 md:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
                     {/* Brand Column */}
                     <div className="space-y-4">
                         <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
@@ -50,22 +49,6 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Newsletter */}
-                    <div className="space-y-4">
-                        <h4 className="text-lg font-semibold text-white">Receba Novidades</h4>
-                        <p className="text-slate-400 text-sm">
-                            Inscreva-se para receber tendências de IA e dicas de marca pessoal.
-                        </p>
-                        <div className="flex gap-2">
-                            <Input
-                                placeholder="Seu e-mail profissional"
-                                className="bg-white/5 border-white/10 focus:border-blue-500 duration-300 text-white"
-                            />
-                            <Button size="icon" className="bg-blue-600 hover:bg-blue-700">
-                                <Send className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Bottom Bar */}

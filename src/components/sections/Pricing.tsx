@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/Card";
 
 const TIERS = [
@@ -39,7 +40,12 @@ const TIERS = [
 ];
 
 export function Pricing() {
+    const [loadingTier, setLoadingTier] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     const handleCheckout = async (tierId: string) => {
+        setLoadingTier(tierId);
+        setErrorMessage(null);
         try {
             const response = await fetch("/api/checkout", {
                 method: "POST",
@@ -54,10 +60,12 @@ export function Pricing() {
             if (data.url) {
                 window.location.href = data.url;
             } else {
-                console.error("Failed to create checkout session");
+                setErrorMessage("Não foi possível iniciar o pagamento. Tente novamente.");
             }
-        } catch (error) {
-            console.error("Error during checkout:", error);
+        } catch {
+            setErrorMessage("Erro de conexão. Verifique sua internet e tente novamente.");
+        } finally {
+            setLoadingTier(null);
         }
     };
 
@@ -75,6 +83,12 @@ export function Pricing() {
                         Sem assinaturas mensais. Pague uma vez, use para sempre.
                     </p>
                 </div>
+
+                {errorMessage && (
+                    <div className="max-w-4xl mx-auto mb-6 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm text-center">
+                        {errorMessage}
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {TIERS.map((tier, index) => (
@@ -124,9 +138,15 @@ export function Pricing() {
                                             }`}
                                         variant={tier.popular ? 'default' : 'outline'}
                                         size="lg"
+                                        disabled={loadingTier !== null}
                                         onClick={() => handleCheckout(tier.id)}
                                     >
-                                        {tier.cta}
+                                        {loadingTier === tier.id ? (
+                                            <>
+                                                <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                                                Aguarde...
+                                            </>
+                                        ) : tier.cta}
                                     </Button>
                                 </CardFooter>
                             </Card>

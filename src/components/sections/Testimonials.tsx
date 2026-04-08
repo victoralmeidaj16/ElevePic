@@ -8,7 +8,6 @@ const testimonials = [
             avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face"
         },
         text: "O ElevePic transformou meu perfil no LinkedIn. As fotos ficaram incrivelmente profissionais e naturais!",
-        href: "https://twitter.com/ana.design"
     },
     {
         author: {
@@ -17,7 +16,6 @@ const testimonials = [
             avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
         },
         text: "Impressionante a qualidade. Consegui fotos para meu portfólio em minutos, sem precisar de um estúdio.",
-        href: "https://twitter.com/carlos.dev"
     },
     {
         author: {

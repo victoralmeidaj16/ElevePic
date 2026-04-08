@@ -15,12 +15,12 @@ export default function Home() {
         <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
             <Navbar />
             <Hero />
-            <TransformationShowcase />
             <Steps />
+            <TransformationShowcase />
+            <Gallery />
             <UploadMockup />
             <Benefits />
             <Testimonials />
-            <Gallery />
             <Pricing />
             <FAQ />
             <Footer />
