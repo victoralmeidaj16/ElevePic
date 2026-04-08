@@ -80,7 +80,7 @@ export function Pricing() {
                         Investimento Único
                     </h2>
                     <p className="text-muted-foreground max-w-2xl text-lg">
-                        Sem assinaturas mensais. Pague uma vez, use para sempre.
+                        Pague uma vez. Suas fotos ficam suas para sempre.
                     </p>
                 </div>
 
