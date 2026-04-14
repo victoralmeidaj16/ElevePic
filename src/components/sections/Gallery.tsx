@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Dialog";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
+
+// Desktop: 3 cols × 2 rows = 6 | Mobile: 1 col × 3 rows = 3
+const INITIAL_DESKTOP = 6;
+const INITIAL_MOBILE = 3;
 
 interface Style {
     id: string;
@@ -21,6 +25,7 @@ export function Gallery() {
     const [selectedStyle, setSelectedStyle] = useState<Style | null>(null);
     const [styles, setStyles] = useState<Style[]>([]);
     const [loading, setLoading] = useState(true);
+    const [expanded, setExpanded] = useState(false);
 
     useEffect(() => {
         const fetchStyles = async () => {
@@ -56,68 +61,94 @@ export function Gallery() {
                     </p>
                 </div>
 
-                <div className="relative min-h-[400px]">
-                <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                        key="gallery-content"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    >
+                <div className="relative">
                     {loading ? (
-                        Array(6).fill(0).map((_, i) => (
-                            <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse" />
-                        ))
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array(INITIAL_DESKTOP).fill(0).map((_, i) => (
+                                <div key={i} className="aspect-[4/5] rounded-2xl bg-white/5 animate-pulse" />
+                            ))}
+                        </div>
                     ) : (
                         <>
-                            {styles.map((item, index) => (
-                                <motion.div
-                                    key={item.firestoreId}
-                                    initial={{ opacity: 0, y: 16 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.04, duration: 0.3 }}
-                                >
-                                    <Card
-                                        className="group overflow-hidden border-white/5 bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                                        onClick={() => setSelectedStyle(item)}
-                                    >
-                                        <CardContent className="p-4 md:p-6 flex items-center gap-6">
-                                            {/* Style Cover Image */}
-                                            <div className="w-20 h-24 md:w-24 md:h-32 shrink-0 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-all duration-300 shadow-2xl">
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.title}
-                                                    loading="lazy"
-                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {styles.map((item, index) => {
+                                    const hiddenOnMobile = !expanded && index >= INITIAL_MOBILE;
+                                    const hiddenOnDesktop = !expanded && index >= INITIAL_DESKTOP;
+                                    if (hiddenOnDesktop) return null;
+                                    return (
+                                        <motion.div
+                                            key={item.firestoreId}
+                                            initial={{ opacity: 0, y: 16 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.04, duration: 0.3 }}
+                                            className={hiddenOnMobile ? "hidden md:block" : ""}
+                                        >
+                                            <Card
+                                                className="group overflow-hidden border-white/5 bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                                                onClick={() => setSelectedStyle(item)}
+                                            >
+                                                <CardContent className="p-4 md:p-6 flex items-center gap-6">
+                                                    <div className="w-20 h-24 md:w-24 md:h-32 shrink-0 rounded-xl overflow-hidden border border-white/10 group-hover:border-primary/50 transition-all duration-300 shadow-2xl">
+                                                        <img
+                                                            src={item.image}
+                                                            alt={item.title}
+                                                            loading="lazy"
+                                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                                                            {item.title}
+                                                        </h3>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {item.tags?.slice(0, 2).map((tag) => (
+                                                                <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                                                                    {tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                        <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors mt-4">
+                                                            Ver Detalhes
+                                                            <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+                                                        </div>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
 
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                                                    {item.title}
-                                                </h3>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {item.tags?.slice(0, 2).map((tag) => (
-                                                        <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                                <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors mt-4">
-                                                    Ver Detalhes
-                                                    <ChevronRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </motion.div>
-                            ))}
+                            {/* Gradient fade */}
+                            {!expanded && styles.length > INITIAL_DESKTOP && (
+                                <div className="relative -mt-28 h-28 pointer-events-none">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+                                </div>
+                            )}
+
+                            {/* Ver mais / Ver menos */}
+                            {styles.length > INITIAL_MOBILE && (
+                                <div className="flex justify-center mt-6">
+                                    <button
+                                        onClick={() => setExpanded(prev => !prev)}
+                                        className="group flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-medium text-slate-300 hover:text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                    >
+                                        {expanded ? (
+                                            <>
+                                                <ChevronUp className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
+                                                Ver menos
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                                                Ver mais estilos
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </>
                     )}
-                    </motion.div>
-                </AnimatePresence>
                 </div>
             </div>
 
