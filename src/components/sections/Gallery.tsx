@@ -70,7 +70,7 @@ export function Gallery() {
                         </div>
                     ) : (
                         <>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div id="gallery-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {styles.map((item, index) => {
                                     const hiddenOnMobile = !expanded && index >= INITIAL_MOBILE;
                                     const hiddenOnDesktop = !expanded && index >= INITIAL_DESKTOP;
@@ -131,7 +131,9 @@ export function Gallery() {
                                 <div className="flex justify-center mt-6">
                                     <button
                                         onClick={() => setExpanded(prev => !prev)}
-                                        className="group flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-medium text-slate-300 hover:text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
+                                        aria-expanded={expanded}
+                                        aria-controls="gallery-grid"
+                                        className="group flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm font-medium text-muted-foreground hover:text-white transition-all duration-300 backdrop-blur-sm cursor-pointer"
                                     >
                                         {expanded ? (
                                             <>
@@ -163,11 +165,11 @@ export function Gallery() {
                     </DialogHeader>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-white/10 group shadow-2xl">
+                        <div className="aspect-[3/4] rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
                             <img
                                 src={selectedStyle?.image}
                                 alt={selectedStyle?.title}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                className="w-full h-full object-cover"
                             />
                         </div>
                         <div className="flex flex-col justify-between">

@@ -50,18 +50,21 @@ export function Hero() {
                             "https://www.shadcnblocks.com/images/block/avatar-5.webp",
                         ].map((src, index) => (
                             <Avatar key={index} className="size-14 border border-background">
-                                <AvatarImage src={src} alt={`Avatar ${index + 1}`} />
+                                <AvatarImage src={src} alt="Foto de cliente ElevePic" />
                             </Avatar>
                         ))}
                     </span>
                     <div>
                         <div className="flex items-center gap-1 justify-center sm:justify-start">
+                            <span role="img" aria-label="Avaliação: 5 de 5 estrelas" className="flex items-center gap-1">
                             {[...Array(5)].map((_, index) => (
                                 <Star
                                     key={index}
                                     className="size-5 fill-yellow-400 text-yellow-400"
+                                    aria-hidden="true"
                                 />
                             ))}
+                        </span>
                         </div>
                         <p className="text-left font-medium text-muted-foreground">
                             avaliações 5 estrelas

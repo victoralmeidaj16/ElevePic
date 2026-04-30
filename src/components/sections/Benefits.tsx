@@ -50,7 +50,7 @@ export function Benefits() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="p-8 rounded-2xl border border-white/5 bg-card hover:bg-muted/80 transition-all duration-300 group"
+                            className="p-8 rounded-2xl border border-white/5 bg-card transition-all duration-300 group cursor-default"
                         >
                             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                                 <benefit.icon className="w-6 h-6 text-primary" />

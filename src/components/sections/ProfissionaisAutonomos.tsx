@@ -83,7 +83,7 @@ export function ProfissionaisAutonomos() {
 
                 {/* Cards grid */}
                 <div className="relative">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div id="autonomo-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                         {visible.map((style, index) => {
                             const hasImage = !!style.image;
                             const placeholder = PLACEHOLDERS[index % PLACEHOLDERS.length];
@@ -107,9 +107,10 @@ export function ProfissionaisAutonomos() {
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
                                         ) : (
-                                            <div className={`w-full h-full bg-gradient-to-br ${placeholder} flex items-center justify-center`}>
-                                                <span className="text-3xl font-bold text-white/10 tracking-tight select-none">
-                                                    {style.title.charAt(0)}
+                                            <div className={`w-full h-full bg-gradient-to-br ${placeholder} flex flex-col items-center justify-center gap-2`}>
+                                                <Briefcase className="w-8 h-8 text-white/20" aria-hidden="true" />
+                                                <span className="text-[10px] uppercase tracking-widest text-white/20 select-none px-4 text-center">
+                                                    {style.category}
                                                 </span>
                                             </div>
                                         )}
@@ -152,14 +153,16 @@ export function ProfissionaisAutonomos() {
                     {AUTONOMO_STYLES.length > INITIAL_VISIBLE && (
                         <button
                             onClick={() => setExpanded(prev => !prev)}
-                            className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm text-slate-300 hover:text-white transition-all duration-300"
+                            aria-expanded={expanded}
+                            aria-controls="autonomo-grid"
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-sm text-muted-foreground hover:text-white transition-all duration-300 cursor-pointer"
                         >
                             {expanded ? "Ver menos" : `Ver todos os ${AUTONOMO_STYLES.length} estilos`}
                         </button>
                     )}
                     <Button
                         className="bg-primary hover:bg-primary/90 text-white px-8 rounded-full shadow-lg shadow-primary/20"
-                        onClick={() => (window.location.href = "#pricing")}
+                        onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
                     >
                         Começar agora
                         <ChevronRight className="ml-2 w-4 h-4" />
@@ -213,7 +216,7 @@ export function ProfissionaisAutonomos() {
 
                             <Button
                                 className="w-full py-6 mt-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold shadow-xl shadow-primary/20"
-                                onClick={() => (window.location.href = "#pricing")}
+                                onClick={() => { setSelected(null); document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }}
                             >
                                 Gerar com este estilo
                                 <ChevronRight className="ml-2 w-5 h-5" />
