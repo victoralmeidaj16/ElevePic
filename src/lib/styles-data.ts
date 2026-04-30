@@ -294,7 +294,7 @@ export const STYLES: StyleOption[] = [
         title: "Profissional Moderno Marinho",
         category: "corporate",
         tags: ["Corporativo", "Marinho", "Moderno", "Confiança"],
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/modern-navy-professional.jpg",
         prompt: `Confident studio portrait of [person] reflecting their physical characteristics. Standing relaxed against a dark gradient backdrop. The subject faces the camera directly with a friendly, natural smile that conveys approachability and confidence. One hand rests casually inside a pocket while the other lightly holds the front of the jacket, posture upright yet relaxed. Wardrobe modern and refined: deep navy blue tailored blazer with subtle texture, paired with a clean black crew-neck shirt. Minimal accessories with a metallic wristwatch visible on the wrist, reinforcing a polished professional aesthetic. Background smooth charcoal-to-black gradient creating a clean studio environment with no visible distractions. Composition centered with balanced negative space around the subject. Lighting soft and directional from the front-left, producing gentle highlights across the face and jacket texture while maintaining natural skin tones. Camera positioned at chest height for a natural perspective. Framing mid-length portrait capturing upper torso and arms. Portrait lens look (85mm, shallow depth of field).`,
     },
     {
@@ -302,7 +302,7 @@ export const STYLES: StyleOption[] = [
         title: "Executivo Light Gray Trust",
         category: "corporate",
         tags: ["Corporativo", "Executivo", "Cinza", "Acessível"],
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/light-gray-executive.jpg",
         prompt: `Professional studio portrait of [person] reflecting their physical characteristics. Middle-aged executive standing against a smooth light gray backdrop. The subject faces the camera with a relaxed, friendly smile, posture upright and composed. One arm crosses naturally across the torso while the opposite hand is raised near the chin in a subtle confident gesture, creating a composed and approachable professional stance. Wardrobe clean and modern: light gray tailored blazer over a crisp white dress shirt. Minimal accessories with a dark smartwatch visible on the wrist. Background neutral and seamless, soft light gray with no distractions. Lighting soft and balanced from the front-left, producing natural skin tones and gentle facial highlights while maintaining smooth shadows along the jawline and neck. Light wraps softly around the subject for a refined commercial portrait look. Camera positioned slightly above chest level. Framing upper-body portrait capturing head, shoulders and folded arms. Portrait lens look (85mm, shallow depth of field).`,
     },
     {
@@ -334,7 +334,7 @@ export const STYLES: StyleOption[] = [
         title: "Executivo Premium (Borda da Mesa)",
         category: "premium",
         tags: ["Premium", "Executivo", "Poder", "Estúdio"],
-        image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/executivo-borda-mesa.jpg",
         prompt: `Executive-style portrait of [person] reflecting their physical features. Confident professional seated on the edge of a wooden desk inside an elegant office. Calm, authoritative expression, posture upright and composed. One arm crosses forearm, hand relaxes on knee. Wardrobe: deep navy tailored suit, white shirt, classic wristwatch and minimal elegant accessories. Background: luxurious office wall with wooden shelving and warm ambient LED lighting. Cinematic and controlled lighting. 85mm lens look.`,
     },
     {
@@ -342,7 +342,7 @@ export const STYLES: StyleOption[] = [
         title: "Executivo Moderno (Backlit Shelf)",
         category: "premium",
         tags: ["Premium", "Moderno", "Liderança", "LED"],
-        image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/executivo-moderno-shelf.jpg",
         prompt: `Professional executive portrait of [person] reflecting their physical features. Standing beside a wooden desk in a modern office, approachable expression, relaxed posture. Wardrobe: tailored gray blazer, black crew-neck shirt. Office environment premium with open laptop. Background: wooden shelving wall with warm integrated LED lighting, globe, books, plants. Warm cinematic lighting with soft frontal key. Mid-thigh upward framing, 85mm lens look.`,
     },
     {
@@ -350,7 +350,7 @@ export const STYLES: StyleOption[] = [
         title: "Liderança e Determinação",
         category: "premium",
         tags: ["Premium", "Liderança", "Estratégia", "Foco"],
-        image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/lideranca-determinacao.jpg",
         prompt: `Executive portrait of [person] reflecting their physical features. Leaning forward with both hands firmly placed on a wooden desk, determined expression. Posture conveys authority and strategic confidence. Wardrobe: deep navy tailored blazer, black dress shirt open at collar. Background: wooden shelving with warm integrated LED horizontal lines. Cinematic professional lighting, soft frontal key with golden ambient glow. Symmetrical composition, 85mm lens look.`,
     },
     {
@@ -366,7 +366,7 @@ export const STYLES: StyleOption[] = [
         title: "Advocacia Executive (Mãos na Mesa)",
         category: "direito",
         tags: ["Direito", "Liderança", "LED", "Madeira"],
-        image: "https://images.unsplash.com/photo-1556157382-97eda2d622ca?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/advogado-sitting-led.jpg",
         prompt: `Professional portrait of [person] reflecting their physical features. A confident lawyer sitting behind a wooden desk with hands clasped. Wearing an elegant navy tailored suit with a white dress shirt and burgundy tie. Accessories minimal and refined, including a classic wristwatch. Environment: Luxury law office interior with wooden shelves and warm LED lighting. Decor elements include law books and legal ornaments. Soft cinematic corporate lighting with warm ambient backlighting and a soft frontal key light. Shot on an 85mm portrait lens, shallow depth of field. Mood professional, trustworthy, authoritative.`,
     },
     {
@@ -382,7 +382,7 @@ export const STYLES: StyleOption[] = [
         title: "Advocacia Estratégica (Leaning)",
         category: "direito",
         tags: ["Direito", "Estratégia", "Foco", "Biblioteca"],
-        image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/advogado-leaning-forward.jpg",
         prompt: `Professional portrait of [person] reflecting their physical features. A confident lawyer leaning forward with hands on the table. Wearing an elegant black tailored suit with a white dress shirt and classic dark tie. Accessories minimal and refined. Environment: Luxury law office interior with a modern law office background featuring legal books and wooden shelving. Soft cinematic corporate lighting with warm ambient backlighting and a soft frontal key light. Shot on an 85mm portrait lens, shallow depth of field. Mood determined, strategic, professional.`,
     },
     {
@@ -406,7 +406,7 @@ export const STYLES: StyleOption[] = [
         title: "Advocacia Dinâmica (Mão na Mesa)",
         category: "direito",
         tags: ["Direito", "Dinâmico", "LED", "Autoridade"],
-        image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400",
+        image: "/styles/advogado-leaning-led.jpg",
         prompt: `Professional portrait of [person] reflecting their physical features. A confident lawyer leaning forward with hands on the desk. Wearing an elegant charcoal gray tailored suit with a white dress shirt and classic dark tie. Accessories minimal and refined. Environment: Luxury law office interior with wooden shelves and warm LED lighting. Decor elements include legal ornaments and books. Soft cinematic corporate lighting with warm ambient backlighting and a soft frontal key light. Shot on an 85mm portrait lens, shallow depth of field. Mood authoritative, confident, professional.`,
     },
     {

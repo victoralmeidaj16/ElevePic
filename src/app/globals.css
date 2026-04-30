@@ -111,4 +111,22 @@
   .text-gradient-brand {
     @apply text-primary;
   }
+
+  .autonomo-marquee {
+    animation: autonomo-marquee 45s linear infinite;
+  }
+
+  .autonomo-marquee:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes autonomo-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.625rem));
+  }
 }
