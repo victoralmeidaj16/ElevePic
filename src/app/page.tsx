@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Gallery } from "@/components/sections/Gallery";
+import { ProfissionaisAutonomos } from "@/components/sections/ProfissionaisAutonomos";
 import { Steps } from "@/components/sections/Steps";
 import { UploadMockup } from "@/components/sections/UploadMockup";
 import { Pricing } from "@/components/sections/Pricing";
@@ -18,6 +19,7 @@ export default function Home() {
             <Steps />
             <TransformationShowcase />
             <Gallery />
+            <ProfissionaisAutonomos />
             <UploadMockup />
             <Benefits />
             <Testimonials />
