@@ -3,13 +3,44 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { STYLE_CATEGORIES } from "@/lib/styles-data";
-import { FirestoreStyle, getStyles } from "@/lib/styles-service";
+import { FirestoreStyle } from "@/lib/styles-service";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { getStylePreviewUrl } from "@/lib/style-preview";
 
 interface StyleSelectorProps {
     selectedStyles: string[];
     onSelect: (id: string) => void;
+}
+
+function StylePreview({ style, isSelected }: { style: FirestoreStyle; isSelected: boolean }) {
+    const [hasError, setHasError] = useState(false);
+    const imageUrl = getStylePreviewUrl(style);
+    const showImage = Boolean(imageUrl) && !hasError;
+
+    if (showImage) {
+        return (
+            <img
+                src={imageUrl!}
+                alt={style.title}
+                loading="lazy"
+                onError={() => setHasError(true)}
+                className={cn(
+                    "w-full h-full object-cover transition-all duration-700",
+                    isSelected ? "scale-105 brightness-110" : "group-hover:scale-105 group-hover:brightness-110"
+                )}
+            />
+        );
+    }
+
+    return (
+        <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                <span className="text-xl font-bold text-white/30">{style.title.charAt(0)}</span>
+            </div>
+            <p className="text-[10px] uppercase tracking-[0.28em] text-white/25">Sem Preview</p>
+        </div>
+    );
 }
 
 export function StyleSelector({ selectedStyles, onSelect }: StyleSelectorProps) {
@@ -101,22 +132,7 @@ export function StyleSelector({ selectedStyles, onSelect }: StyleSelectorProps) 
                                             : "border-transparent hover:border-white/20"
                                     )}
                                 >
-                                    {style.image ? (
-                                        <img
-                                            src={style.image}
-                                            alt={style.title}
-                                            className={cn(
-                                                "w-full h-full object-cover transition-all duration-700",
-                                                isSelected ? "scale-105 brightness-110" : "group-hover:scale-105 group-hover:brightness-110"
-                                            )}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-4 text-center">
-                                            <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
-                                                <span className="text-xl font-bold text-white/30">{style.title.charAt(0)}</span>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <StylePreview style={style} isSelected={isSelected} />
 
                                     {/* Gradient Overlay */}
                                     <div className={cn(
@@ -166,4 +182,3 @@ export function StyleSelector({ selectedStyles, onSelect }: StyleSelectorProps) 
         </div>
     );
 }
-

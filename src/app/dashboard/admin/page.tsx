@@ -11,6 +11,7 @@ import { FirestoreStyle } from "@/lib/styles-service";
 import { getUserImages, UserImage } from "@/lib/user-storage";
 import { STYLE_CATEGORIES, StyleOption } from "@/lib/styles-data";
 import { ADMIN_EMAIL } from "@/lib/constants";
+import { getStylePreviewUrl } from "@/lib/style-preview";
 
 const EMPTY_FORM: Omit<StyleOption, "id"> & { tags: string[] } = {
     title: "",
@@ -38,6 +39,7 @@ function AdminContent() {
     const [tagInput, setTagInput] = useState("");
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [categoryFilter, setCategoryFilter] = useState<string>("all");
+    const [imageFailures, setImageFailures] = useState<Record<string, boolean>>({});
 
     // Generation states
     const [testingStyle, setTestingStyle] = useState<FirestoreStyle | null>(null);
@@ -47,6 +49,9 @@ function AdminContent() {
     const [userImages, setUserImages] = useState<UserImage[]>([]);
 
     const isAdmin = user?.email === ADMIN_EMAIL;
+    const markImageFailure = (styleId: string) => {
+        setImageFailures((current) => current[styleId] ? current : { ...current, [styleId]: true });
+    };
 
     const loadStyles = async () => {
         setLoading(true);
@@ -592,8 +597,14 @@ function AdminContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {styles.filter(s => categoryFilter === "all" || s.category === categoryFilter).map((style, index) => (
                             <div key={style.firestoreId} className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-white/10 hover:border-blue-500/40 transition-all bg-slate-800">
-                                {style.image ? (
-                                    <img src={style.image} alt={style.title} className="w-full h-full object-cover" />
+                                {getStylePreviewUrl(style) && !imageFailures[style.firestoreId] ? (
+                                    <img
+                                        src={getStylePreviewUrl(style)!}
+                                        alt={style.title}
+                                        loading="lazy"
+                                        onError={() => markImageFailure(style.firestoreId)}
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-950 flex flex-col items-center justify-center p-6 text-center">
                                         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
