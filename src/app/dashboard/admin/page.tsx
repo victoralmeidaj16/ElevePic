@@ -280,7 +280,9 @@ function AdminContent() {
             const bodyPayload = {
                 styles: [testingStyle.id],
                 imageUrls: includePhotos ? userImages.map(img => img.url) : [],
-                allowNoImages: !includePhotos
+                allowNoImages: !includePhotos,
+                uid: user?.uid,
+                userEmail: user?.email,
             };
 
             const response = await fetch("/api/dashboard/generate", {
