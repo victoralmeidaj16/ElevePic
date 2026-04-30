@@ -521,7 +521,49 @@ export const STYLES: StyleOption[] = [
         image: "",
         prompt: `Modern cinematic editorial portrait photography used in premium personal branding and founder portraits. [person] sitting slightly forward with one arm resting and the other hand near the face, wearing a light neutral sweater and a modern smartwatch. Close portrait framing from chest to head with the subject centered, direct eye contact with the camera, subtle foreground depth created by the arm and hand. Soft cinematic studio lighting with a slightly directional key light creating gentle shadows and a dark gradient background. Muted neutral tones with a dark blue-gray background, warm skin tones, light clothing, and subtle dark accessories. Professional portrait photography using an 85mm lens, eye-level perspective, moderate depth of field with sharp focus on the eyes. Confident, introspective, modern and intelligent. Natural skin texture, soft fabric folds, subtle reflections on watch surface, smooth gradient background. 8k, ultra detailed, professional cinematic portrait photography.`,
     },
+    {
+        id: "executive-marble-thoughtful",
+        title: "Executivo em Mesa de Mármore",
+        category: "corporate",
+        tags: ["Corporativo", "Mármore", "Pensativo", "Premium"],
+        image: "",
+        prompt: `A ultra-realistic professional portrait of [person], seated at a modern executive desk, looking directly at the camera with a serious, confident and focused expression. The subject is posed with one hand resting on the chin in a thoughtful pose, while the other arm rests naturally on a marble desk surface. Wearing a minimalist black button-up shirt and a metallic wristwatch. Shot at eye-level, medium framing (waist-up), with centered composition and strong symmetry. Sharp focus on the face and upper body, with a slightly blurred background (shallow depth of field). Cinematic studio lighting setup: soft frontal key light (softbox) illuminating the face evenly, subtle side fill lights to reduce harsh shadows, and warm LED backlighting integrated into the background shelves, creating depth and a premium atmosphere. Warm color temperature (3000K–4000K), soft contrast, elegant highlights. Environment: modern, sophisticated office with dark wooden paneling and built-in illuminated shelves. Minimalist decor elements such as books and subtle objects. A laptop placed on the desk in the foreground. Clean, organized and uncluttered space. Style: corporate editorial photography, ultra-realistic, premium aesthetic, cinematic look. Shot on Canon EOS R5, 50mm lens, f/1.8. High detail, 4K resolution, sharp textures, balanced colors, soft shadows, slight background bokeh.`,
+    },
+    {
+        id: "corporate-lifestyle-warm",
+        title: "Lifestyle Corporativo Acolhedor",
+        category: "lifestyle",
+        tags: ["Lifestyle", "Acolhedor", "Escritório", "Amigável"],
+        image: "",
+        prompt: `A ultra-realistic professional portrait of [person] seated at a wooden desk in a modern, warm-toned office environment, smiling naturally at the camera with a friendly, confident and approachable expression. The subject has a relaxed posture, hands gently clasped together in front of the body, conveying openness and professionalism. Wearing a smart casual outfit: a dark tailored blazer over a clean white t-shirt, with subtle accessories like a wristwatch and bracelet. The subject is seated on a brown leather office chair. Shot at eye-level, medium framing (waist-up), with centered composition. Sharp focus on the face with a softly blurred background (shallow depth of field). Soft, natural-looking lighting setup: diffused key light from the front/side illuminating the face evenly, combined with warm ambient lighting from a practical lamp in the background, creating a cozy and premium atmosphere. Balanced color temperature with warm highlights and neutral skin tones. Environment: modern, minimalist office with a wooden desk surface, a laptop partially visible in the foreground, a textured neutral wall in the background, a large round wall clock and a warm desk lamp softly glowing. Clean, organized and uncluttered space. Style: corporate lifestyle portrait, ultra-realistic, warm cinematic tone, premium editorial photography. Shot on Canon EOS R5, 50mm lens, f/1.8. High detail, 4K resolution, soft shadows, natural color grading, subtle bokeh.`,
+    },
+    {
+        id: "entrepreneur-high-impact",
+        title: "Empreendedor de Alto Impacto",
+        category: "premium",
+        tags: ["Premium", "Empreendedor", "Intenso", "Tatuagem"],
+        image: "",
+        prompt: `A ultra-realistic professional portrait of [person], maintaining consistent facial identity across generations, seated on a chair leaning slightly forward with elbows resting on knees, hands interlocked in front of the mouth in a thoughtful, intense pose. Facial expression calm and confident, gaze directed straight into the camera, creating strong presence. Archetype: high-status entrepreneur. Wearing a fitted white dress shirt with sleeves rolled up, showing tattooed forearms, dark fitted trousers. Cinematic low-key lighting with a single directional key light from 45°, deep shadows, subtle rim light separating from a deep black background, emphasizing body contours and facial structure. Shot at eye level, medium framing, 50mm lens, f/1.8, shallow depth of field, sharp focus on face. Ultra-realistic, 4K, high detail, professional editorial photography, no distortion, natural skin tones.`,
+    },
+    {
+        id: "introspective-low-key-noir",
+        title: "Introspectivo Low-Key Noir",
+        category: "noir",
+        tags: ["Noir", "Dramático", "Introspectivo", "Premium"],
+        image: "",
+        prompt: `A ultra-realistic cinematic portrait of [person], maintaining consistent facial identity and likeness across generations (“same face”), facing forward in a static close-up composition (head and shoulders). The subject holds a serious, confident, and introspective expression, with a steady gaze directed straight into the camera, creating a strong and dominant presence. The head is slightly tilted downward, enhancing authority and intensity. The subject wears a minimal black high-collar jacket with a matte texture, no logos or visible branding, reinforcing a clean and premium aesthetic. Lighting is dramatic low-key in a Rembrandt pattern: a soft directional key light from camera-left at a 45-degree angle illuminates one side of the face, while the opposite side falls into deep shadow. Subtle fill light preserves minimal detail in the shadows, and a faint rim light provides separation from the background. Background is a solid deep black seamless backdrop with no distractions, maximizing focus on the subject. Shot at eye level with an 85mm prime lens, f/1.8 aperture, shallow depth of field, ultra sharp focus on the eyes. Color grading is cinematic with low saturation, warm shadows, natural skin tones, and high contrast, creating a moody, premium, editorial look. Ultra-realistic, high detail, 8K resolution, professional studio photography, magazine cover quality, no distortion, no artifacts, no extra limbs.`,
+    },
+    {
+        id: "charismatic-leadership-approachable",
+        title: "Liderança Carismática",
+        category: "corporate",
+        tags: ["Corporativo", "Carismático", "Amigável", "Smart Casual"],
+        image: "",
+        prompt: `A ultra-realistic professional portrait of [person], maintaining consistent facial identity and likeness across generations (“same face”), seated in a relaxed yet confident posture, body slightly angled while leaning forward naturally. One arm rests casually on the leg while the other hand is loosely positioned, creating an open and approachable body language. Facial expression: genuine smile, warm, confident, and charismatic, with the gaze directed slightly off-camera, conveying authenticity, ease, and social intelligence rather than dominance. Archetype: modern professional / approachable high-status individual. Wearing a smart casual outfit: a tailored navy blazer over a clean white t-shirt, paired with dark fitted trousers. Subtle accessories such as modern eyeglasses, enhancing personality and relatability while maintaining a premium look. Lighting: soft cinematic lighting with a diffused key light from camera-left, evenly illuminating the face with gentle shadows. Balanced fill light reduces harsh contrast, creating a clean, premium and approachable aesthetic. No heavy драмatic shadows — emphasis on clarity and warmth. Background: minimalist neutral gray seamless backdrop, smooth and distraction-free, softly blurred to maintain focus on the subject. Shot at eye level, medium framing (waist-up), slightly off-center composition for a more natural and editorial feel. 50mm–85mm lens, f/1.8 aperture, shallow depth of field, sharp focus on the face. Color grading: clean, modern, slightly desaturated tones with natural skin color, soft contrast, and subtle warmth, creating a refined corporate-lifestyle aesthetic. Ultra-realistic, high detail, 8K resolution, professional studio photography, editorial quality, clean composition, no distortion, no artifacts, no extra limbs.`,
+    },
 ];
+
+
 
 export const STYLE_CATEGORIES = [
     { id: "saude", label: "Área da Saúde", emoji: "🩺" },

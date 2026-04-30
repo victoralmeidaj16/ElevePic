@@ -96,7 +96,9 @@ export default function DashboardPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     styles: selectedStyles,
-                    imageUrls: userImages.map(img => img.url)
+                    imageUrls: userImages.map(img => img.url),
+                    uid: user!.uid,
+                    userEmail: user!.email,
                 }),
             });
 
@@ -131,13 +133,8 @@ export default function DashboardPage() {
                 promptUsed: s.promptUsed
             })));
 
-            // Deduct credits via server API and update state only if not admin
+            // Credits already deducted server-side during generation; update local state to reflect it
             if (!isAdmin) {
-                await fetch("/api/profile/credits", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ uid: user!.uid, amount: data.images.length }),
-                });
                 setCredits(prev => prev - data.images.length);
             }
 

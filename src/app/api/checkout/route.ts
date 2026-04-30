@@ -3,6 +3,8 @@ import { stripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
+const DEFAULT_PAYMENT_METHOD_TYPES = ["card", "pix"] as const;
+
 export async function POST(req: Request) {
     try {
         const { priceId } = await req.json();
@@ -18,8 +20,8 @@ export async function POST(req: Request) {
 
         const unitAmount = amounts[priceId] ?? 8990;
 
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
+        const sessionConfig: Parameters<typeof stripe.checkout.sessions.create>[0] = {
+            payment_method_types: [...DEFAULT_PAYMENT_METHOD_TYPES],
             line_items: [
                 {
                     price_data: {
@@ -39,7 +41,28 @@ export async function POST(req: Request) {
             },
             success_url: `${req.headers.get("origin")}/signup?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.get("origin")}/?canceled=true`,
-        });
+        };
+
+        let session;
+
+        try {
+            session = await stripe.checkout.sessions.create(sessionConfig);
+        } catch (error) {
+            const shouldFallbackToCard =
+                error instanceof Error &&
+                error.message.includes("payment method type provided: pix is invalid");
+
+            if (!shouldFallbackToCard) {
+                throw error;
+            }
+
+            console.warn("Pix is not enabled for this Stripe account yet. Falling back to card-only checkout.");
+
+            session = await stripe.checkout.sessions.create({
+                ...sessionConfig,
+                payment_method_types: ["card"],
+            });
+        }
 
         return NextResponse.json({ url: session.url });
     } catch (error) {

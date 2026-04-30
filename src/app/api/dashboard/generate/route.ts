@@ -2,15 +2,16 @@ import { NextResponse } from "next/server";
 import { STYLES } from "@/lib/styles-data";
 import { generateHeadshots } from "@/lib/gemini";
 import { adminDb } from "@/lib/firebase-admin";
+import { ADMIN_EMAIL } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { styles, imageUrls, allowNoImages } = body;
+        const { styles, imageUrls, allowNoImages, uid, userEmail } = body;
 
-        console.log("Generating with:", { styles, imageUrlsCount: imageUrls?.length, allowNoImages });
+        console.log("Generating with:", { styles, imageUrlsCount: imageUrls?.length, allowNoImages, uid });
 
         if (!styles || !Array.isArray(styles) || styles.length === 0) {
             return NextResponse.json(
@@ -24,6 +25,34 @@ export async function POST(req: Request) {
                 { error: "É necessário ter pelo menos 3 fotos de rosto para gerar." },
                 { status: 400 }
             );
+        }
+
+        const isAdmin = userEmail === ADMIN_EMAIL;
+
+        // Verify and reserve credits before generating (prevents abuse)
+        if (!isAdmin) {
+            if (!uid) {
+                return NextResponse.json({ error: "Usuário não autenticado." }, { status: 401 });
+            }
+
+            const { FieldValue } = await import("firebase-admin/firestore");
+            const userRef = adminDb.collection("users").doc(uid);
+
+            // Use a transaction to atomically check and deduct credits
+            const deducted = await adminDb.runTransaction(async (tx) => {
+                const snap = await tx.get(userRef);
+                const credits: number = snap.data()?.credits ?? 0;
+                if (credits < styles.length) return false;
+                tx.update(userRef, { credits: FieldValue.increment(-styles.length) });
+                return true;
+            });
+
+            if (!deducted) {
+                return NextResponse.json(
+                    { error: "Créditos insuficientes para gerar a quantidade de estilos selecionados." },
+                    { status: 402 }
+                );
+            }
         }
 
         // 1. Fetch and convert user images to Base64 (Skip if no images provided)
