@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
-const DEFAULT_PAYMENT_METHOD_TYPES = ["card", "pix"] as const;
-
 export async function POST(req: Request) {
     try {
         const { priceId } = await req.json();
-
-        // Ensure priceId is provided (or map lookup keys here)
-        // For this implementation, we allow dynamic priceId or fallback to a default if needed
-        // but robustly we should validate it against allowed prices.
 
         const amounts: Record<string, number> = {
             starter: 8990,
@@ -19,15 +14,16 @@ export async function POST(req: Request) {
         };
 
         const unitAmount = amounts[priceId] ?? 8990;
+        const origin = req.headers.get("origin");
 
-        const sessionConfig: Parameters<typeof stripe.checkout.sessions.create>[0] = {
-            payment_method_types: [...DEFAULT_PAYMENT_METHOD_TYPES],
+        const baseConfig: Stripe.Checkout.SessionCreateParams = {
+            payment_method_types: ["card", "pix"],
             line_items: [
                 {
                     price_data: {
                         currency: "brl",
                         product_data: {
-                            name: `ElevePic - Pacote ${priceId === 'starter' ? 'Essencial' : 'Profissional'}`,
+                            name: `ElevePic - Pacote ${priceId === "starter" ? "Essencial" : "Profissional"}`,
                             description: "Headshots gerados por IA com qualidade de estúdio",
                         },
                         unit_amount: unitAmount,
@@ -37,29 +33,26 @@ export async function POST(req: Request) {
             ],
             mode: "payment",
             metadata: {
-                credits: priceId === 'pro' ? '12' : '5'
+                credits: priceId === "pro" ? "12" : "5",
             },
-            success_url: `${req.headers.get("origin")}/signup?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.headers.get("origin")}/?canceled=true`,
+            success_url: `${origin}/signup?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/?canceled=true`,
         };
 
-        let session;
+        let session: Stripe.Checkout.Session;
 
         try {
-            session = await stripe.checkout.sessions.create(sessionConfig);
+            session = await stripe.checkout.sessions.create(baseConfig);
         } catch (error) {
-            const shouldFallbackToCard =
+            const isPixInvalid =
                 error instanceof Error &&
                 error.message.includes("payment method type provided: pix is invalid");
 
-            if (!shouldFallbackToCard) {
-                throw error;
-            }
+            if (!isPixInvalid) throw error;
 
-            console.warn("Pix is not enabled for this Stripe account yet. Falling back to card-only checkout.");
-
+            console.warn("PIX não habilitado nesta conta Stripe. Usando apenas cartão.");
             session = await stripe.checkout.sessions.create({
-                ...sessionConfig,
+                ...baseConfig,
                 payment_method_types: ["card"],
             });
         }
@@ -67,9 +60,6 @@ export async function POST(req: Request) {
         return NextResponse.json({ url: session.url });
     } catch (error) {
         console.error("Stripe Checkout Error:", error);
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
