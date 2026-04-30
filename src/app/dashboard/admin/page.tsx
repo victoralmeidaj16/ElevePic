@@ -41,7 +41,7 @@ function AdminContent() {
 
     // Generation states
     const [testingStyle, setTestingStyle] = useState<FirestoreStyle | null>(null);
-    const [includePhotos, setIncludePhotos] = useState(true);
+    const [includePhotos, setIncludePhotos] = useState(false);
     const [generating, setGenerating] = useState(false);
     const [testResult, setTestResult] = useState<string | null>(null);
     const [userImages, setUserImages] = useState<UserImage[]>([]);
@@ -521,10 +521,15 @@ function AdminContent() {
                                         </label>
                                     </div>
 
+                                    {includePhotos && userImages.length < 3 && (
+                                        <p className="text-xs text-yellow-400/80 text-center -mb-1">
+                                            ⚠ Você tem {userImages.length}/3 fotos de referência. Desmarque a opção acima para gerar só pelo prompt.
+                                        </p>
+                                    )}
                                     <Button
                                         onClick={() => handleConfirmTest(true)}
                                         disabled={generating || (includePhotos && userImages.length < 3)}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+                                        className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
                                     >
                                         {generating ? (
                                             <>
