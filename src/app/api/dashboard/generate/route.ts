@@ -73,9 +73,40 @@ export async function POST(req: Request) {
             );
         }
 
-        // 2. Generate for each style
-        // We run these in parallel, but catch errors effectively
-        const resultsPromises = styles.map(async (styleId: string) => {
+        // Helper: sleep
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Helper: call generateHeadshots with retry on rate limit
+        async function generateWithRetry(
+            imageBuffers: { data: string; mimeType: string }[],
+            prompt: string,
+            styleId: string,
+            maxRetries = 3
+        ): Promise<string[]> {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const images = await generateHeadshots(imageBuffers, prompt);
+                    return images;
+                } catch (err: any) {
+                    const msg = err?.message ?? "";
+                    const isRateLimit = msg.includes("429") || msg.toLowerCase().includes("quota") || msg.toLowerCase().includes("rate");
+                    console.error(`[${styleId}] Attempt ${attempt} failed:`, msg);
+                    if (isRateLimit && attempt < maxRetries) {
+                        const delay = 5000 * attempt; // 5s, 10s, 15s
+                        console.log(`[${styleId}] Rate limit hit. Waiting ${delay}ms before retry...`);
+                        await sleep(delay);
+                    } else {
+                        throw err;
+                    }
+                }
+            }
+            return [];
+        }
+
+        // 2. Generate for each style SEQUENTIALLY to avoid rate limits
+        const results: any[] = [];
+
+        for (const styleId of styles) {
             let style = STYLES.find(s => s.id === styleId) as any;
 
             // Fallback to Firestore if it's a dynamic admin card
@@ -92,10 +123,10 @@ export async function POST(req: Request) {
 
             if (!style) {
                 console.warn(`Estilo ${styleId} não encontrado.`);
-                return null;
+                continue;
             }
 
-            // Use the Nano Banana prompt directly, replacing [person] placeholder
+            // Build prompt replacing [person] placeholder
             let prompt = "";
             if (imageBuffers.length > 0) {
                 prompt = `Use the reference photos provided to identify the person. Generate a new image of THIS EXACT PERSON preserving their facial features, skin tone, hair, and likeness. Apply the following style:\n\n${style.prompt.replace(/\[person\]/g, "the person shown in the reference photos")}`;
@@ -106,26 +137,26 @@ export async function POST(req: Request) {
             console.log(`\n--- PROMPT USED FOR [${styleId}] ---\n${prompt}\n--- END PROMPT ---\n`);
 
             try {
-                // Call Gemini
-                // We request 1 image per style to save limit/time, but gemini.ts defaults to 4.
-                // Let's take the first valid one.
-                const generatedImages = await generateHeadshots(imageBuffers, prompt);
+                const generatedImages = await generateWithRetry(imageBuffers, prompt, styleId);
 
                 if (generatedImages.length > 0) {
-                    return {
+                    results.push({
                         styleId,
-                        url: generatedImages[0], // Base64 data URL
+                        url: generatedImages[0],
                         promptUsed: style.prompt
-                    };
+                    });
+                } else {
+                    console.warn(`[${styleId}] Gemini returned 0 images (no candidates). Skipping.`);
                 }
-                return null;
-            } catch (error) {
-                console.error(`Failed to generate style ${styleId}:`, error);
-                return null; // or throw if we want to fail the whole batch
+            } catch (error: any) {
+                console.error(`[${styleId}] Generation failed after retries:`, error?.message);
             }
-        });
 
-        const results = (await Promise.all(resultsPromises)).filter(Boolean);
+            // Small delay between sequential requests to avoid rate limit
+            if (styles.indexOf(styleId) < styles.length - 1) {
+                await sleep(2000);
+            }
+        }
 
         if (results.length === 0) {
             throw new Error("Falha na geração de todas as imagens. Tente novamente.");

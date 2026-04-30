@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
         const selectedPrompt = prompts[style] || prompts.Corporate;
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3-pro-image-preview" });
 
         // Note: As before, Gemini 1.5 Pro standard API returns text. 
         // We simulate the generation or use the mock again unless access to a visual generation model is confirmed.

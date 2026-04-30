@@ -45,7 +45,7 @@ export const STYLES: StyleOption[] = [
         title: "Retrato Corporativo",
         category: "studio",
         tags: ["Corporativo", "LinkedIn", "Terno", "Profissional"],
-        image: "",
+        image: "/styles/corporate-headshot.jpg",
         prompt: `Ultra-realistic 8K corporate headshot of the person in the input photo. Keep their exact face, identity, age, gender, ethnicity, hairstyle and expression; do not alter unique facial features. Replace clothing with a tailored navy blue wool business suit and crisp white shirt. Clean dark gray studio backdrop with a soft center-light gradient and subtle vignette, no objects. Style as a Sony A7III 85mm f/1.4 studio portrait in portrait orientation with shallow depth of field: subject sharp, background softly blurred. Soft three-point lighting with gentle shadows and a subtle rim light on hair and shoulders. Preserve natural skin texture with pores and fine details, no plastic smoothing. Bright, natural catchlights in the eyes. Final image: high-end LinkedIn-ready studio portrait.`,
     },
     {
@@ -470,7 +470,7 @@ export const STYLES: StyleOption[] = [
         title: "Estúdio Comercial Clean",
         category: "studio",
         tags: ["Comercial", "Clean", "Startup", "Minimalista"],
-        image: "",
+        image: "/styles/commercial-studio-clean.jpg",
         prompt: `Clean commercial studio portrait photography, modern minimal branding aesthetic, high-key professional portrait style used in startup marketing and premium stock photography. [person] standing in a minimalist studio environment, wearing a simple white t-shirt and casual dark jeans, arms crossed while smiling naturally at the camera. Centered mid-torso portrait framing with strong negative space around the subject, symmetrical composition designed for advertising layouts and text overlays, subject facing directly toward the camera. Soft high-key studio lighting with diffused frontal key light and gentle fill light to eliminate harsh shadows, evenly illuminated white background creating a clean commercial look. Minimal palette dominated by soft whites, neutral skin tones, subtle blacks from hair and tattoos, creating strong contrast against the white clothing and background. Professional DSLR portrait setup, 50mm lens, eye-level perspective, sharp facial focus with subtle background softness. Confident, approachable, modern and professional. Natural skin texture, subtle facial expression, clean white cotton fabric folds, soft shadow gradients, ultra clean studio background. 8k, ultra detailed, professional commercial photography.`,
     },
     {
@@ -478,7 +478,7 @@ export const STYLES: StyleOption[] = [
         title: "Editorial Moderno Minimalista",
         category: "editorial",
         tags: ["Editorial", "Moderno", "Startup", "Branding"],
-        image: "",
+        image: "/styles/modern-editorial-minimal.jpg",
         prompt: `Modern studio portrait photography, minimal editorial portrait used in startup branding and premium commercial campaigns. [person] sitting slightly forward with hands clasped together, wearing a simple white t-shirt, subtle jewelry, and thin metal glasses, looking directly into the camera. Close portrait framing from chest to head, subject slightly off-center with hands positioned in the foreground, creating depth layers between hands, face, and background. Clean neutral background with large negative space. Soft diffused studio lighting using a frontal softbox with gentle fill light, producing smooth skin tones and very soft shadows. Controlled reflections on glasses and subtle shadow gradients. Neutral tones dominated by white clothing, light gray background, natural warm skin tones, dark hair and tattoos, subtle metallic accents. Professional portrait photography using an 85mm lens, eye-level perspective, sharp focus on the eyes and face with shallow depth of field. Confident, approachable, modern and professional. Natural skin texture, detailed tattoos, soft cotton fabric folds, subtle jewelry highlights, ultra clean studio backdrop. 8k, ultra detailed, professional commercial photography.`,
     },
     {
@@ -518,7 +518,7 @@ export const STYLES: StyleOption[] = [
         title: "Personal Branding Founder",
         category: "premium",
         tags: ["Personal Branding", "Liderança", "Cinemático", "Premium"],
-        image: "",
+        image: "/styles/personal-branding-founder.jpg",
         prompt: `Modern cinematic editorial portrait photography used in premium personal branding and founder portraits. [person] sitting slightly forward with one arm resting and the other hand near the face, wearing a light neutral sweater and a modern smartwatch. Close portrait framing from chest to head with the subject centered, direct eye contact with the camera, subtle foreground depth created by the arm and hand. Soft cinematic studio lighting with a slightly directional key light creating gentle shadows and a dark gradient background. Muted neutral tones with a dark blue-gray background, warm skin tones, light clothing, and subtle dark accessories. Professional portrait photography using an 85mm lens, eye-level perspective, moderate depth of field with sharp focus on the eyes. Confident, introspective, modern and intelligent. Natural skin texture, soft fabric folds, subtle reflections on watch surface, smooth gradient background. 8k, ultra detailed, professional cinematic portrait photography.`,
     },
     {

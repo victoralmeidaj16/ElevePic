@@ -24,7 +24,7 @@ const AUTONOMO_IDS = [
 
 const AUTONOMO_STYLES = AUTONOMO_IDS
     .map(id => STYLES.find(s => s.id === id))
-    .filter(Boolean) as StyleOption[];
+    .filter((s): s is StyleOption => !!s && !!s.image);
 
 const INITIAL_VISIBLE = 6;
 

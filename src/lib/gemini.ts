@@ -38,6 +38,10 @@ export async function generateHeadshots(
     const candidates = json.candidates ?? [];
     const images: string[] = [];
 
+    if (candidates.length === 0) {
+        console.error("Gemini API returned no candidates. Full response:", JSON.stringify(json, null, 2));
+    }
+
     for (const candidate of candidates) {
         for (const part of candidate.content?.parts ?? []) {
             if (part.inlineData?.data) {
